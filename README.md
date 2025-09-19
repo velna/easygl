@@ -41,10 +41,11 @@
 ```java
 package com.vanix.easygl.learnopengl.c1_gettingstarted;
 
-import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.input.Keyboard;
-import com.vanix.easygl.core.window.Window;
-import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.graphics.DataType;
+import com.vanix.easygl.window.input.Keyboard;
+import com.vanix.easygl.window.Window;
+import com.vanix.easygl.window.WindowHints;
+import com.vanix.easygl.graphics.*;
 
 public class C2_1_HelloTriangle {
     public static void main(String[] args) {
@@ -52,8 +53,8 @@ public class C2_1_HelloTriangle {
         WindowHints.ContextVersionMinor.set(3);
         WindowHints.OpenGlProfile.Core.set();
 
-        try (var window = Window.of(800, 600, "LearnOpenGL");
-             var graphics = Graphics.of(window);
+        try (var window = Window.of(800, 600, "LearnOpenGL").bind();
+             var graphics = Graphics.of().viewport(window.frameBufferWidth(), window.frameBufferHeight());
              var program = Program.of();
              var vao = VertexArray.of();
              var vbo = Buffer.of(DataType.Float)) {
@@ -107,12 +108,14 @@ public class C2_1_HelloTriangle {
 package com.vanix.easygl.learnopengl.c4_advancedopengl;
 
 import com.vanix.easygl.application.g3d.ControllableCamera;
-import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.input.Keyboard;
-import com.vanix.easygl.core.input.Mouse;
-import com.vanix.easygl.core.window.Window;
-import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.graphics.DataType;
+import com.vanix.easygl.graphics.InternalPixelFormat;
+import com.vanix.easygl.window.input.Keyboard;
+import com.vanix.easygl.window.input.Mouse;
+import com.vanix.easygl.window.Window;
+import com.vanix.easygl.window.WindowHints;
 import com.vanix.easygl.learnopengl.Uniforms;
+import com.vanix.easygl.graphics.*;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -126,8 +129,8 @@ public class C11_2_AntiAliasingMsaaOffscreen {
         WindowHints.ContextVersionMinor.set(3);
         WindowHints.OpenGlProfile.Core.set();
 
-        try (var window = Window.of(800, 600, "LearnOpenGL");
-             var graphics = Graphics.of(window);
+        try (var window = Window.of(800, 600, "LearnOpenGL").bind();
+             var graphics = Graphics.of().viewport(window.frameBufferWidth(), window.frameBufferHeight());
              var frameBuffer = FrameBuffer.of();
              var renderBuffer = RenderBuffer.of();
              var intermediateFBO = FrameBuffer.of();
@@ -283,5 +286,4 @@ public class C11_2_AntiAliasingMsaaOffscreen {
 运行效果：
 ![](learnopengl/screenshots/C11_2_AntiAliasingMsaaOffscreen.png)
 
-## 关于子模块learnopengl
-所有代码移植自 [LearnOpenGL](https://github.com/JoeyDeVries/LearnOpenGL)，resources目录下的所有文件也全部来源于LearnOpenGL，特此说明。
+## 更多示例见 [learnopengl项目](https://github.com/velna/learnopengl)
