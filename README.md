@@ -101,7 +101,7 @@ public class C2_1_HelloTriangle {
 
 ```
 运行效果：
-![](learnopengl/screenshots/C2_1_HelloTriangle.png)
+![](screenshots/C2_1_HelloTriangle.png)
 
 ## 全屏抗锯齿
 ```java
@@ -284,6 +284,6 @@ public class C11_2_AntiAliasingMsaaOffscreen {
 }
 ```
 运行效果：
-![](learnopengl/screenshots/C11_2_AntiAliasingMsaaOffscreen.png)
+![](screenshots/C11_2_AntiAliasingMsaaOffscreen.png)
 
 ## 更多示例见 [learnopengl项目](https://github.com/velna/learnopengl)
