@@ -1,5 +1,6 @@
 package com.vanix.easygl.graphics;
 
+import com.vanix.easygl.commons.BitSet;
 import com.vanix.easygl.core.Closeable;
 import com.vanix.easygl.core.MultiFeature;
 import com.vanix.easygl.core.Support;
@@ -31,6 +32,14 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
     double[] getDepthRangeDouble();
 
     int[] getDepthRangeIntMapped();
+
+    Graphics setMemoryBarrier(MemoryBarrier memoryBarrier);
+
+    Graphics setMemoryBarrier(BitSet<MemoryBarrier> memoryBarriers);
+
+    Graphics setMemoryBarrierByRegion(MemoryBarrier.Regional memoryBarrier);
+
+    Graphics setMemoryBarrierByRegion(BitSet<MemoryBarrier.Regional> memoryBarriers);
     // endregion
 
     DefaultFrameBuffer defaultFrameBuffer();

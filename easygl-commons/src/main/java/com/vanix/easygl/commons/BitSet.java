@@ -46,8 +46,82 @@ public class BitSet<T> {
         return this;
     }
 
+    @SafeVarargs
+    public final BitSet<T> addAll(T... es) {
+        for (var e : es) {
+            value |= maskMapper.applyAsInt(e);
+        }
+        return this;
+    }
+
+    public BitSet<T> remove(T e) {
+        value &= ~maskMapper.applyAsInt(e);
+        return this;
+    }
+
+    public BitSet<T> remove(T e1, T e2) {
+        value &= ~(maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2));
+        return this;
+    }
+
+    public BitSet<T> remove(T e1, T e2, T e3) {
+        value &= ~(maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2) | maskMapper.applyAsInt(e3));
+        return this;
+    }
+
+    public BitSet<T> remove(T e1, T e2, T e3, T e4) {
+        value &= ~(maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2) | maskMapper.applyAsInt(e3)
+                | maskMapper.applyAsInt(e4));
+        return this;
+    }
+
+    public BitSet<T> remove(T e1, T e2, T e3, T e4, T e5) {
+        value &= ~(maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2) | maskMapper.applyAsInt(e3)
+                | maskMapper.applyAsInt(e4) | maskMapper.applyAsInt(e5));
+        return this;
+    }
+
+    @SafeVarargs
+    public final BitSet<T> removeAll(T... es) {
+        for (var e : es) {
+            value &= ~maskMapper.applyAsInt(e);
+        }
+        return this;
+    }
+
     public boolean contains(T e) {
         int v = maskMapper.applyAsInt(e);
+        return (value & v) == v;
+    }
+
+    public boolean contains(T e1, T e2) {
+        int v = (maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2));
+        return (value & v) == v;
+    }
+
+    public boolean contains(T e1, T e2, T e3) {
+        int v = (maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2) | maskMapper.applyAsInt(e3));
+        return (value & v) == v;
+    }
+
+    public boolean contains(T e1, T e2, T e3, T e4) {
+        int v = (maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2) | maskMapper.applyAsInt(e3)
+                | maskMapper.applyAsInt(e4));
+        return (value & v) == v;
+    }
+
+    public boolean contains(T e1, T e2, T e3, T e4, T e5) {
+        int v = (maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2) | maskMapper.applyAsInt(e3)
+                | maskMapper.applyAsInt(e4) | maskMapper.applyAsInt(e5));
+        return (value & v) == v;
+    }
+
+    @SafeVarargs
+    public final boolean containsAll(T... es) {
+        int v = 0;
+        for (var e : es) {
+            v |= maskMapper.applyAsInt(e);
+        }
         return (value & v) == v;
     }
 
@@ -66,6 +140,10 @@ public class BitSet<T> {
 
     public static <T extends IntEnum> BitSet<T> of(T intEnum) {
         return of(intEnum, IntEnum::value);
+    }
+
+    public static <T extends IntEnum> BitSet<T> of(Class<T> type) {
+        return of(null, IntEnum::value);
     }
 
     public static <T> BitSet<T> of(ToIntFunction<T> maskMapper) {

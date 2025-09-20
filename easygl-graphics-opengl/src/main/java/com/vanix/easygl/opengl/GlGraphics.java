@@ -1,5 +1,6 @@
 package com.vanix.easygl.opengl;
 
+import com.vanix.easygl.commons.BitSet;
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.graphics.*;
 import com.vanix.easygl.graphics.feature.*;
@@ -80,6 +81,34 @@ public class GlGraphics implements Graphics {
         var data = new int[2];
         GLX.glGetIntegerv(GLX.GL_DEPTH_RANGE, data);
         return data;
+    }
+
+    @Override
+    public Graphics setMemoryBarrier(MemoryBarrier memoryBarrier) {
+        GLX.glMemoryBarrier(memoryBarrier.value());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Graphics setMemoryBarrier(BitSet<MemoryBarrier> memoryBarriers) {
+        GLX.glMemoryBarrier(memoryBarriers.value());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Graphics setMemoryBarrierByRegion(MemoryBarrier.Regional memoryBarrier) {
+        GLX.glMemoryBarrierByRegion(memoryBarrier.value());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Graphics setMemoryBarrierByRegion(BitSet<MemoryBarrier.Regional> memoryBarriers) {
+        GLX.glMemoryBarrierByRegion(memoryBarriers.value());
+        GLX.checkError();
+        return this;
     }
 
     @Override
