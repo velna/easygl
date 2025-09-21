@@ -15,6 +15,10 @@ public abstract class AttributesEnum<A> extends EnumType<AttributeType> {
         throw new UnsupportedOperationException();
     }
 
+    protected UpdatableAnyPrimitiveAttribute<A> ofUpdatableAny(int key) {
+        throw new UnsupportedOperationException();
+    }
+
     protected IntAttribute ofInt(int key) {
         throw new UnsupportedOperationException();
     }

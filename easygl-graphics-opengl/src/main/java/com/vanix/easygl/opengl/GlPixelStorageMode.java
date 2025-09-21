@@ -1,8 +1,8 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.commons.attr.AbstractAttribute;
+import com.vanix.easygl.commons.attr.UpdatableAnyPrimitiveAttribute;
 import com.vanix.easygl.commons.attr.UpdatableBooleanAttribute;
-import com.vanix.easygl.commons.attr.UpdatableIntAttribute;
 import com.vanix.easygl.graphics.Graphics;
 import com.vanix.easygl.graphics.PixelStorageMode;
 
@@ -17,11 +17,11 @@ public class GlPixelStorageMode extends PixelStorageMode {
     }
 
     @Override
-    protected UpdatableIntAttribute<PixelStorageMode> ofUpdatableInt(int key) {
+    protected UpdatableAnyPrimitiveAttribute<PixelStorageMode> ofUpdatableAny(int key) {
         return new Attribute(key);
     }
 
-    private class Attribute extends AbstractAttribute implements UpdatableBooleanAttribute<PixelStorageMode>, UpdatableIntAttribute<PixelStorageMode> {
+    private class Attribute extends AbstractAttribute implements UpdatableAnyPrimitiveAttribute<PixelStorageMode> {
         public Attribute(int key) {
             super(key);
         }
@@ -36,6 +36,17 @@ public class GlPixelStorageMode extends PixelStorageMode {
         public PixelStorageMode set(int value) {
             GLX.glPixelStorei(key, value);
             return GlPixelStorageMode.this;
+        }
+
+        @Override
+        public PixelStorageMode set(float value) {
+            GLX.glPixelStoref(key, value);
+            return GlPixelStorageMode.this;
+        }
+
+        @Override
+        public float getAsFloat() {
+            return GLX.glGetFloat(key);
         }
 
         @Override

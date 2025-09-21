@@ -40,6 +40,8 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
     Graphics setMemoryBarrierByRegion(MemoryBarrier.Regional memoryBarrier);
 
     Graphics setMemoryBarrierByRegion(BitSet<MemoryBarrier.Regional> memoryBarriers);
+
+    Graphics setTextureBarrier();
     // endregion
 
     DefaultFrameBuffer defaultFrameBuffer();

@@ -375,9 +375,9 @@
 | glMapBufferRange                               |                                                                                    |
 | glMapNamedBuffer                               | X DSA                                                                              |
 | glMapNamedBufferRange                          | X DSA                                                                              |
-| glMemoryBarrier                                | X                                                                                  |
-| glMemoryBarrierByRegion                        | X                                                                                  |
-| glMinSampleShading                             |                                                                                    |
+| glMemoryBarrier                                | Graphics.setMemoryBarrier()                                                        |
+| glMemoryBarrierByRegion                        | Graphics.setMemoryBarrierByRegion()                                                |
+| glMinSampleShading                             | Graphics.minSampleShading                                                          |
 | glMultiDrawArrays                              |                                                                                    |
 | glMultiDrawArraysIndirect                      |                                                                                    |
 | glMultiDrawElements                            |                                                                                    |
@@ -397,26 +397,26 @@
 | glNamedRenderbufferStorageMultisample          | X DSA                                                                              |
 | glObjectLabel                                  | X                                                                                  |
 | glObjectPtrLabel                               | X                                                                                  |
-| glPatchParameter                               |                                                                                    |
-| glPatchParameterfv                             |                                                                                    |
-| glPatchParameteri                              |                                                                                    |
-| glPauseTransformFeedback                       |                                                                                    |
-| glPixelStore                                   |                                                                                    |
-| glPixelStoref                                  | X                                                                                  |
-| glPixelStorei                                  |                                                                                    |
-| glPointParameter                               |                                                                                    |
-| glPointParameterf                              |                                                                                    |
-| glPointParameterfv                             |                                                                                    |
-| glPointParameteri                              |                                                                                    |
-| glPointParameteriv                             |                                                                                    |
-| glPointSize                                    |                                                                                    |
-| glPolygonMode                                  |                                                                                    |
-| glPolygonOffset                                |                                                                                    |
-| glPopDebugGroup                                |                                                                                    |
-| glPrimitiveRestartIndex                        |                                                                                    |
-| glProgramBinary                                |                                                                                    |
-| glProgramParameter                             |                                                                                    |
-| glProgramParameteri                            |                                                                                    |
+| glPatchParameter                               | Graphics.setPathXXX()                                                              |
+| glPatchParameterfv                             | Graphics.setPathXXX()                                                              |
+| glPatchParameteri                              | Graphics.setPathXXX()                                                              |
+| glPauseTransformFeedback                       | TransformFeedback.pause()                                                          |
+| glPixelStore                                   | PixelStorageMode.XXX.setXXX()                                                      |
+| glPixelStoref                                  | PixelStorageMode.XXX.setFloat()                                                    |
+| glPixelStorei                                  | PixelStorageMode.XXX.setInt()                                                      |
+| glPointParameter                               | Graphics.setPointXXX()                                                             |
+| glPointParameterf                              | Graphics.setPointXXX()                                                             |
+| glPointParameterfv                             | Graphics.setPointXXX()                                                             |
+| glPointParameteri                              | Graphics.setPointXXX()                                                             |
+| glPointParameteriv                             | Graphics.setPointXXX()                                                             |
+| glPointSize                                    | Graphics.setPointSize()                                                            |
+| glPolygonMode                                  | Graphics.setPolygonMode()                                                          |
+| glPolygonOffset                                | Graphics.setPolygonOffset()                                                        |
+| glPopDebugGroup                                | Debug.popGroup()                                                                   |
+| glPrimitiveRestartIndex                        | PrimitiveRestart.setRestartIndex()                                                 |
+| glProgramBinary                                | Program.loadBinary()                                                               |
+| glProgramParameter                             | Program.setXXX()                                                                   |
+| glProgramParameteri                            | Program.setXXX()                                                                   |
 | glProgramUniform                               | X DSA                                                                              |
 | glProgramUniform1f                             | X DSA                                                                              |
 | glProgramUniform1fv                            | X DSA                                                                              |
@@ -451,33 +451,33 @@
 | glProgramUniformMatrix4fv                      | X DSA                                                                              |
 | glProgramUniformMatrix4x2fv                    | X DSA                                                                              |
 | glProgramUniformMatrix4x3fv                    | X DSA                                                                              |
-| glProvokingVertex                              |                                                                                    |
-| glPushDebugGroup                               |                                                                                    |
-| glQueryCounter                                 |                                                                                    |
-| glReadBuffer                                   |                                                                                    |
+| glProvokingVertex                              | Graphics.provokingVertex()                                                         |
+| glPushDebugGroup                               | Debug.pushGroup()                                                                  |
+| glQueryCounter                                 | Query.TimerQuery.count()                                                           |
+| glReadBuffer                                   | BaseFrameBuffer.selectReadBuffer()                                                 |
 | glReadnPixels                                  | X                                                                                  |
-| glReadPixels                                   |                                                                                    |
-| glReleaseShaderCompiler                        |                                                                                    |
-| glRenderbufferStorage                          |                                                                                    |
-| glRenderbufferStorageMultisample               |                                                                                    |
-| glResumeTransformFeedback                      |                                                                                    |
+| glReadPixels                                   | BaseFrameBuffer.readPixels()                                                       |
+| glReleaseShaderCompiler                        | Graphics.releaseShaderCompiler()                                                   |
+| glRenderbufferStorage                          | RenderBuffer.storage()                                                             |
+| glRenderbufferStorageMultisample               | RenderBuffer.storageMultiSample()                                                  |
+| glResumeTransformFeedback                      | TransformFeedback.resume()                                                         |
 | glSampleCoverage                               | X                                                                                  |
 | glSampleMaski                                  | X                                                                                  |
-| glSamplerParameter                             |                                                                                    |
-| glSamplerParameterf                            |                                                                                    |
-| glSamplerParameterfv                           |                                                                                    |
-| glSamplerParameteri                            |                                                                                    |
-| glSamplerParameterIiv                          |                                                                                    |
-| glSamplerParameterIuiv                         |                                                                                    |
-| glSamplerParameteriv                           |                                                                                    |
-| glScissor                                      |                                                                                    |
-| glScissorArray                                 |                                                                                    |
-| glScissorArrayv                                |                                                                                    |
-| glScissorIndexed                               |                                                                                    |
-| glScissorIndexedv                              |                                                                                    |
-| glShaderBinary                                 |                                                                                    |
-| glShaderSource                                 |                                                                                    |
-| glShaderStorageBlockBinding                    |                                                                                    |
+| glSamplerParameter                             | Sampler.XXX()                                                                      |
+| glSamplerParameterf                            | Sampler.XXX()                                                                      |
+| glSamplerParameterfv                           | Sampler.XXX()                                                                      |
+| glSamplerParameteri                            | Sampler.XXX()                                                                      |
+| glSamplerParameterIiv                          | Sampler.XXX()                                                                      |
+| glSamplerParameterIuiv                         | Sampler.XXX()                                                                      |
+| glSamplerParameteriv                           | Sampler.XXX()                                                                      |
+| glScissor                                      | ScissorTest.setBox()                                                               |
+| glScissorArray                                 | ScissorTest.setBoxes()                                                             |
+| glScissorArrayv                                | ScissorTest.setBoxes()                                                             |
+| glScissorIndexed                               | ScissorTest.setBoxAt()                                                             |
+| glScissorIndexedv                              | ScissorTest.setBoxAt()                                                             |
+| glShaderBinary                                 | ShaderArray.binary()                                                               |
+| glShaderSource                                 | Shader.source()                                                                    |
+| glShaderStorageBlockBinding                    | ShaderStorageBlock.bind()                                                          |
 | glStencilFunc                                  |                                                                                    |
 | glStencilFuncSeparate                          |                                                                                    |
 | glStencilMask                                  |                                                                                    |
@@ -506,7 +506,7 @@
 | glTexSubImage1D                                |                                                                                    |
 | glTexSubImage2D                                |                                                                                    |
 | glTexSubImage3D                                |                                                                                    |
-| glTextureBarrier                               | X                                                                                  |
+| glTextureBarrier                               | Graphics.setTextureBarrier()                                                       |
 | glTextureBuffer                                |                                                                                    |
 | glTextureBufferRange                           | X DSA                                                                              |
 | glTextureParameterf                            | X DSA                                                                              |

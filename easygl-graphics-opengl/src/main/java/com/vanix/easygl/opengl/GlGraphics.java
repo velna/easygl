@@ -112,6 +112,12 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
+    public Graphics setTextureBarrier() {
+        GLX.glTextureBarrier();
+        return this;
+    }
+
+    @Override
     public PixelStorageMode pixelStorageMode() {
         return pixelStorageMode;
     }

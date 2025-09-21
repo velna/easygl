@@ -19,6 +19,10 @@ public class MetaSystemAttributesEnum<A, O> extends AttributesEnum<A> {
         return ofBoolean(metaSystem.queryInt(id));
     }
 
+    protected UpdatableAnyPrimitiveAttribute<A> ofUpdatableAny(String id) {
+        return ofUpdatableAny(metaSystem.queryInt(id));
+    }
+
     protected UpdatableBooleanAttribute<A> ofUpdatableBoolean(String id) {
         return ofUpdatableBoolean(metaSystem.queryInt(id));
     }
