@@ -6,7 +6,10 @@ import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.graphics.Pipeline;
 import com.vanix.easygl.graphics.Program;
 import com.vanix.easygl.graphics.Shader;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
+import java.nio.IntBuffer;
 import java.util.function.IntConsumer;
 
 public class GlPipeline extends AbstractBindable<BindTarget.Default<Pipeline>, Pipeline> implements Pipeline {
@@ -59,5 +62,15 @@ public class GlPipeline extends AbstractBindable<BindTarget.Default<Pipeline>, P
     public Program getShaderProgram(Shader.Type shaderType) {
         int handle = GLX.glGetProgramPipelinei(intHandle(), shaderType.value());
         return handle > 0 ? new GlProgram(handle) : null;
+    }
+
+    @Override
+    public String getInfoLog() {
+        int logLen = GLX.glGetProgramPipelinei(intHandle(), GLX.GL_INFO_LOG_LENGTH);
+        try (var stack = MemoryStack.stackPush()) {
+            var logBuf = stack.malloc(logLen);
+            GLX.glGetProgramInfoLog(intHandle(), (IntBuffer) null, logBuf);
+            return MemoryUtil.memUTF8(logBuf, logLen);
+        }
     }
 }

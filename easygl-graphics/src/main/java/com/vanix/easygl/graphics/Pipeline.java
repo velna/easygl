@@ -2,7 +2,10 @@ package com.vanix.easygl.graphics;
 
 import com.vanix.easygl.commons.BitSet;
 import com.vanix.easygl.commons.IntEnum;
-import com.vanix.easygl.core.*;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.Bindable;
+import com.vanix.easygl.core.HandleArray;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import javax.annotation.Nullable;
@@ -25,6 +28,8 @@ public interface Pipeline extends Bindable<BindTarget.Default<Pipeline>, Pipelin
 
     @Nullable
     Program getShaderProgram(Shader.Type shaderType);
+
+    String getInfoLog();
 
     static Pipeline of() {
         return MetaHolder.Pipeline.create();
