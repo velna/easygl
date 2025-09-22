@@ -12,7 +12,7 @@ public class GlGeometrySubroutineUniformInterface extends GlSubroutineUniformInt
     }
 
     @Override
-    protected GeometrySubroutineUniform newResource(int index) {
+    protected GeometrySubroutineUniform newResource(GlProgramInterfaceType type, int index) {
         return new GlGeometrySubroutineUniform(program, index);
     }
 

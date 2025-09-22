@@ -11,7 +11,7 @@ public class GlShaderStorageBlockInterface extends BaseInterface<ShaderStorageBl
     }
 
     @Override
-    protected ShaderStorageBlock newResource(int index) {
+    protected ShaderStorageBlock newResource(GlProgramInterfaceType type, int index) {
         return new GlShaderStorageBlock(program, index);
     }
 }

@@ -12,7 +12,7 @@ public class GlComputeSubroutineUniformInterface extends GlSubroutineUniformInte
     }
 
     @Override
-    protected ComputeSubroutineUniform newResource(int index) {
+    protected ComputeSubroutineUniform newResource(GlProgramInterfaceType type, int index) {
         return new GlComputeSubroutineUniform(program, index);
     }
 

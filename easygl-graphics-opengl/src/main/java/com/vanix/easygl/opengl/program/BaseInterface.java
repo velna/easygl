@@ -21,7 +21,7 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements Inv
     protected final GlProgramInterfaceType type;
     protected final InterfaceCore<BaseInterface<?>> interfaceCore;
     private final List<T> resources = new ArrayList<>();
-    private final List<T> resourcesLazy = LazyList.lazyList(resources, this::newResource);
+    private final List<T> resourcesLazy;
 
     public BaseInterface(Program program, GlProgramInterfaceType type) {
         this(program, type, GL43);
@@ -31,13 +31,14 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements Inv
         this.program = program;
         this.type = type;
         this.interfaceCore = interfaceCore;
+        resourcesLazy = LazyList.lazyList(resources, index -> newResource(type, index));
     }
 
     public Program program() {
         return program;
     }
 
-    protected abstract T newResource(int index);
+    protected abstract T newResource(GlProgramInterfaceType type, int index);
 
     @Override
     public void invalidate() {

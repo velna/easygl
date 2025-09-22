@@ -12,7 +12,7 @@ public class GlTessEvaluationSubroutineUniformInterface extends GlSubroutineUnif
     }
 
     @Override
-    protected TessEvaluationSubroutineUniform newResource(int index) {
+    protected TessEvaluationSubroutineUniform newResource(GlProgramInterfaceType type, int index) {
         return new GlTessEvaluationSubroutineUniform(program, index);
     }
 

@@ -11,7 +11,7 @@ public class GlTransformFeedbackVaryingInterface extends BaseInterface<Transform
     }
 
     @Override
-    protected TransformFeedbackVarying newResource(int index) {
+    protected TransformFeedbackVarying newResource(GlProgramInterfaceType type, int index) {
         return new GlTransformFeedbackVarying(program, index);
     }
 }

@@ -32,8 +32,6 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
         ProgramResource.ReferencedByFragmentShader<T>,
         ProgramResource.ReferencedByComputeShader<T>,
         ProgramResource.ReferencedByTessEvaluationShader<T>,
-        ProgramResource.NumCompatibleSubroutines<T>,
-        ProgramResource.CompatibleSubroutines<T>,
         ProgramResource.TopLevelArraySize<T>,
         ProgramResource.TopLevelArrayStride<T>,
         ProgramResource.Location<T>,
@@ -63,6 +61,7 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
         this.resourceCore = resourceCore;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T preLoad(PropertyKey... keys) {
         List<PropertyKey> propertyKeys = new ArrayList<>(keys.length);
@@ -163,11 +162,6 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
     }
 
     @Override
-    public int getCompatibleSubroutines() {
-        return queryInt(PropertyKey.CompatibleSubroutines);
-    }
-
-    @Override
     public int getLocation() {
         return queryInt(PropertyKey.Location);
     }
@@ -190,11 +184,6 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
     @Override
     public int getNumActiveVariables() {
         return queryInt(PropertyKey.NumActiveVariables);
-    }
-
-    @Override
-    public int getNumCompatibleSubroutines() {
-        return queryInt(PropertyKey.NumCompatibleSubroutines);
     }
 
     @Override

@@ -3,6 +3,9 @@ package com.vanix.easygl.graphics;
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.graphics.program.Subroutine;
+
+import java.util.List;
 
 @Support(since = Version.GL43)
 public interface ProgramResource<T extends ProgramResource<T>> {
@@ -159,7 +162,7 @@ public interface ProgramResource<T extends ProgramResource<T>> {
     }
 
     interface CompatibleSubroutines<T extends ProgramResource<T>> extends ProgramResource<T> {
-        int getCompatibleSubroutines();
+        List<Subroutine> getCompatibleSubroutines();
     }
 
     interface TopLevelArraySize<T extends ProgramResource<T>> extends ProgramResource<T> {

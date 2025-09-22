@@ -11,7 +11,7 @@ public class GlUniformBlockInterface extends BaseInterface<UniformBlock> impleme
     }
 
     @Override
-    protected UniformBlock newResource(int index) {
+    protected UniformBlock newResource(GlProgramInterfaceType type, int index) {
         return new GlUniformBlock(program, index);
     }
 }

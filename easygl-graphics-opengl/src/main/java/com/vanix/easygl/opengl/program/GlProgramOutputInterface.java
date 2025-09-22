@@ -11,7 +11,7 @@ public class GlProgramOutputInterface extends BaseInterface<ProgramOutput> imple
     }
 
     @Override
-    protected ProgramOutput newResource(int index) {
+    protected ProgramOutput newResource(GlProgramInterfaceType type, int index) {
         return new GlProgramOutput(program, index);
     }
 }

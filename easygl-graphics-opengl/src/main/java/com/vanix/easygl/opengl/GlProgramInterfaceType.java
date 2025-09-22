@@ -8,6 +8,7 @@ import com.vanix.easygl.graphics.ProgramResource;
 import com.vanix.easygl.opengl.program.*;
 import org.apache.commons.lang3.reflect.TypeUtils;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
@@ -17,12 +18,12 @@ public enum GlProgramInterfaceType implements IntEnum {
     AtomicCounterBuffer(GLX.GL_ATOMIC_COUNTER_BUFFER, GlAtomicCounterBufferInterface.class, GlAtomicCounterBufferInterface::new),
     ProgramInput(GLX.GL_PROGRAM_INPUT, GlProgramInputInterface.class, GlProgramInputInterface::new),
     ProgramOutput(GLX.GL_PROGRAM_OUTPUT, GlProgramOutputInterface.class, GlProgramOutputInterface::new),
-    VertexSubroutine(GLX.GL_VERTEX_SUBROUTINE, GlVertexSubroutineInterface.class, GlVertexSubroutineInterface::new),
-    TessControlSubroutine(GLX.GL_TESS_CONTROL_SUBROUTINE, GlTessControlSubroutineInterface.class, GlTessControlSubroutineInterface::new),
-    TessEvaluationSubroutine(GLX.GL_TESS_EVALUATION_SUBROUTINE, GlTessEvaluationSubroutineInterface.class, GlTessEvaluationSubroutineInterface::new),
-    GeometrySubroutine(GLX.GL_GEOMETRY_SUBROUTINE, GlGeometrySubroutineInterface.class, GlGeometrySubroutineInterface::new),
-    FragmentSubroutine(GLX.GL_FRAGMENT_SUBROUTINE, GlFragmentSubroutineInterface.class, GlFragmentSubroutineInterface::new),
-    ComputeSubroutine(GLX.GL_COMPUTE_SUBROUTINE, GlComputeSubroutineInterface.class, GlComputeSubroutineInterface::new),
+    VertexSubroutine(GLX.GL_VERTEX_SUBROUTINE, GlSubroutineInterface.class, GlSubroutineInterface::new),
+    TessControlSubroutine(GLX.GL_TESS_CONTROL_SUBROUTINE, GlSubroutineInterface.class, GlSubroutineInterface::new),
+    TessEvaluationSubroutine(GLX.GL_TESS_EVALUATION_SUBROUTINE, GlSubroutineInterface.class, GlSubroutineInterface::new),
+    GeometrySubroutine(GLX.GL_GEOMETRY_SUBROUTINE, GlSubroutineInterface.class, GlSubroutineInterface::new),
+    FragmentSubroutine(GLX.GL_FRAGMENT_SUBROUTINE, GlSubroutineInterface.class, GlSubroutineInterface::new),
+    ComputeSubroutine(GLX.GL_COMPUTE_SUBROUTINE, GlSubroutineInterface.class, GlSubroutineInterface::new),
     VertexSubroutineUniform(GLX.GL_VERTEX_SUBROUTINE_UNIFORM, GlVertexSubroutineUniformInterface.class, GlVertexSubroutineUniformInterface::new),
     TessControlSubroutineUniform(GLX.GL_TESS_CONTROL_SUBROUTINE_UNIFORM, GlTessControlSubroutineUniformInterface.class, GlTessControlSubroutineUniformInterface::new),
     TessEvaluationSubroutineUniform(GLX.GL_TESS_EVALUATION_SUBROUTINE_UNIFORM, GlTessEvaluationSubroutineUniformInterface.class, GlTessEvaluationSubroutineUniformInterface::new),
@@ -37,9 +38,9 @@ public enum GlProgramInterfaceType implements IntEnum {
     final int value;
     final BitSet<ProgramResource.PropertyKey> properties = BitSet.of((ToIntFunction<ProgramResource.PropertyKey>) ProgramResource.PropertyKey::mask);
     final Class<? extends BaseInterface<?>> interfaceType;
-    final Function<Program, ? extends BaseInterface<?>> factory;
+    final BiFunction<Program, GlProgramInterfaceType, ? extends BaseInterface<?>> factory;
 
-    GlProgramInterfaceType(int value, Class<? extends BaseInterface<?>> interfaceType, Function<Program, ? extends BaseInterface<?>> factory) {
+    GlProgramInterfaceType(int value, Class<? extends BaseInterface<?>> interfaceType, BiFunction<Program, GlProgramInterfaceType, ? extends BaseInterface<?>> factory) {
         this.value = value;
         this.interfaceType = interfaceType;
         this.factory = factory;
@@ -51,6 +52,10 @@ public enum GlProgramInterfaceType implements IntEnum {
                 properties.add(propertyKey);
             }
         }
+    }
+
+    GlProgramInterfaceType(int value, Class<? extends BaseInterface<?>> interfaceType, Function<Program, ? extends BaseInterface<?>> factory) {
+        this(value, interfaceType, ((program, interfaceType1) -> factory.apply(program)));
     }
 
     public BitSet<ProgramResource.PropertyKey> properties() {

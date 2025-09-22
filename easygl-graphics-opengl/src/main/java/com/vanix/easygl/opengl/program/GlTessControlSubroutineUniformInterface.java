@@ -12,7 +12,7 @@ public class GlTessControlSubroutineUniformInterface extends GlSubroutineUniform
     }
 
     @Override
-    protected TessControlSubroutineUniform newResource(int index) {
+    protected TessControlSubroutineUniform newResource(GlProgramInterfaceType type, int index) {
         return new GlTessControlSubroutineUniform(program, index);
     }
 

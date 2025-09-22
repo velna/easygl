@@ -11,7 +11,7 @@ public class GlProgramInputInterface extends BaseInterface<ProgramInput> impleme
     }
 
     @Override
-    protected ProgramInput newResource(int index) {
+    protected ProgramInput newResource(GlProgramInterfaceType type, int index) {
         return new GlProgramInput(program, index);
     }
 }

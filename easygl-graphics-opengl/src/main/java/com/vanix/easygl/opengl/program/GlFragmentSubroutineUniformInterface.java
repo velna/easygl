@@ -12,7 +12,7 @@ public class GlFragmentSubroutineUniformInterface extends GlSubroutineUniformInt
     }
 
     @Override
-    protected FragmentSubroutineUniform newResource(int index) {
+    protected FragmentSubroutineUniform newResource(GlProgramInterfaceType type, int index) {
         return new GlFragmentSubroutineUniform(program, index);
     }
 

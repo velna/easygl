@@ -1,10 +1,10 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.Support;
-import com.vanix.easygl.graphics.Version;
 import com.vanix.easygl.graphics.Program;
 import com.vanix.easygl.graphics.ProgramInterfaces;
 import com.vanix.easygl.graphics.ProgramResource;
+import com.vanix.easygl.graphics.Version;
 import com.vanix.easygl.graphics.program.*;
 import com.vanix.easygl.opengl.program.BaseInterface;
 
@@ -26,7 +26,7 @@ public class GlProgramInterfaces implements ProgramInterfaces {
 
     @SuppressWarnings("unchecked")
     private <R extends ProgramResource<R>, T extends BaseInterface<R>> T getInterface(GlProgramInterfaceType type) {
-        return (T) interfaces.computeIfAbsent(type, t -> t.factory.apply(program));
+        return (T) interfaces.computeIfAbsent(type, t -> t.factory.apply(program, type));
     }
 
     @Override
@@ -63,32 +63,32 @@ public class GlProgramInterfaces implements ProgramInterfaces {
     }
 
     @Override
-    public VertexSubroutineInterface vertexSubroutine() {
+    public SubroutineInterface vertexSubroutine() {
         return getInterface(GlProgramInterfaceType.VertexSubroutine);
     }
 
     @Override
-    public TessControlSubroutineInterface tessControlSubroutine() {
+    public SubroutineInterface tessControlSubroutine() {
         return getInterface(GlProgramInterfaceType.TessControlSubroutine);
     }
 
     @Override
-    public TessEvaluationSubroutineInterface tessEvaluationSubroutine() {
+    public SubroutineInterface tessEvaluationSubroutine() {
         return getInterface(GlProgramInterfaceType.TessEvaluationSubroutine);
     }
 
     @Override
-    public GeometrySubroutineInterface geometrySubroutine() {
+    public SubroutineInterface geometrySubroutine() {
         return getInterface(GlProgramInterfaceType.GeometrySubroutine);
     }
 
     @Override
-    public FragmentSubroutineInterface fragmentSubroutine() {
+    public SubroutineInterface fragmentSubroutine() {
         return getInterface(GlProgramInterfaceType.FragmentSubroutine);
     }
 
     @Override
-    public ComputeSubroutineInterface computeSubroutine() {
+    public SubroutineInterface computeSubroutine() {
         return getInterface(GlProgramInterfaceType.ComputeSubroutine);
     }
 

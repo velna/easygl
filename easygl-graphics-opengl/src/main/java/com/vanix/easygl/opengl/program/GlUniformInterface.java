@@ -14,7 +14,7 @@ public class GlUniformInterface extends BaseInterface<Uniform> implements Unifor
     }
 
     @Override
-    protected Uniform newResource(int index) {
+    protected Uniform newResource(GlProgramInterfaceType type, int index) {
         return new Gl43Uniform(program, index).preLoad(PRELOAD_KEYS);
     }
 }

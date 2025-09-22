@@ -1,6 +1,7 @@
 package com.vanix.easygl.opengl.program;
 
 import com.vanix.easygl.graphics.Program;
+import com.vanix.easygl.graphics.program.Subroutine;
 import com.vanix.easygl.graphics.program.SubroutineUniform;
 import com.vanix.easygl.opengl.GLX;
 import com.vanix.easygl.opengl.GlGraphics;
@@ -8,6 +9,7 @@ import com.vanix.easygl.opengl.GlProgramInterfaceType;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class GlSubroutineUniform<T extends SubroutineUniform<T>> extends BaseResource<T> implements SubroutineUniform<T> {
@@ -55,10 +57,38 @@ public abstract class GlSubroutineUniform<T extends SubroutineUniform<T>> extend
             throw new UnsupportedOperationException();
         }
     };
+    private List<Subroutine> compatibleSubroutines;
 
     @SuppressWarnings("unchecked")
     public GlSubroutineUniform(Program program, GlProgramInterfaceType interfaceType, int index) {
         super(program, interfaceType, index, (ResourceCore<BaseResource<?>>) (GlGraphics.CAPABILITIES.OpenGL43 ? GL43 : GL40));
+    }
+
+    @Override
+    public List<Subroutine> getCompatibleSubroutines() {
+        if (compatibleSubroutines == null) {
+            try (var stack = MemoryStack.stackPush()) {
+                var key = PropertyKey.CompatibleSubroutines;
+                var props = stack.mallocInt(1);
+                props.put(0, key.value());
+                var intBuf = stack.mallocInt(getNumCompatibleSubroutines());
+                if (GlGraphics.CAPABILITIES.OpenGL43) {
+                    GLX.glGetProgramResourceiv(program.intHandle(), interfaceType.value(), index, props, null, intBuf);
+                } else {
+                    GLX.glGetActiveSubroutineUniformiv(program.intHandle(), shaderStage().value(), index, GLX.GL_COMPATIBLE_SUBROUTINES, intBuf);
+                }
+                compatibleSubroutines = new ArrayList<>(intBuf.remaining());
+                while (intBuf.hasRemaining()) {
+                    compatibleSubroutines.add(program.interfaces().subroutine(shaderStage()).getResource(intBuf.get()));
+                }
+            }
+        }
+        return compatibleSubroutines;
+    }
+
+    @Override
+    public int getNumCompatibleSubroutines() {
+        return queryInt(PropertyKey.NumCompatibleSubroutines);
     }
 
 }
