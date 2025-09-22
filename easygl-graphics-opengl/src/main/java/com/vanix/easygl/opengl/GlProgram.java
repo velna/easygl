@@ -1,14 +1,14 @@
 package com.vanix.easygl.opengl;
 
+import com.vanix.easygl.commons.util.BeanUtils;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.graphics.GraphicsException;
-import com.vanix.easygl.commons.util.BeanUtils;
 import com.vanix.easygl.graphics.*;
-import com.vanix.easygl.opengl.program.Gl20Uniform;
-import com.vanix.easygl.opengl.program.Gl31UniformBlock;
+import com.vanix.easygl.graphics.program.SubroutineUniform;
 import com.vanix.easygl.graphics.program.Uniform;
 import com.vanix.easygl.graphics.program.UniformBlock;
+import com.vanix.easygl.opengl.program.Gl20Uniform;
+import com.vanix.easygl.opengl.program.Gl31UniformBlock;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
@@ -18,6 +18,7 @@ import java.util.*;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
     private final Map<String, Uniform> uniforms = new LinkedHashMap<>();
+    private final Map<Shader.Type, Map<String, SubroutineUniform<?>>> subroutineUniforms = new EnumMap<>(Shader.Type.class);
     private GlProgramInterfaces interfaces;
 
     protected GlProgram() {
@@ -93,6 +94,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
                 throw new GraphicsException("error link program: " + infoLog);
             }
             uniforms.clear();
+            subroutineUniforms.clear();
             if (interfaces != null) {
                 interfaces.invalidate();
             }
@@ -109,6 +111,21 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
                     GLX.glGetActiveUniform(program, i, length, size, type, nameBuffer);
                     String name = MemoryUtil.memUTF8(nameBuffer, length.get());
                     uniforms.put(name, new Gl20Uniform(this, name, i, Cache.DataType.get(type.get()), size.get()));
+                }
+            }
+            for (var shaderType : Shader.Type.values()) {
+                var subroutineUniformInterface = switch (shaderType) {
+                    case Vertex -> interfaces().vertexSubroutineUniform();
+                    case Fragment -> interfaces().fragmentSubroutineUniform();
+                    case Geometry -> interfaces().geometrySubroutineUniform();
+                    case TessControlShader -> interfaces().tessControlSubroutineUniform();
+                    case TessEvaluationShader -> interfaces().tessEvaluationSubroutineUniform();
+                    case ComputeShader -> interfaces().computeSubroutineUniform();
+                };
+                var subroutineUniformCount = subroutineUniformInterface.getActiveResources();
+                for (var i = 0; i < subroutineUniformCount; i++) {
+                    var subroutineUniform = subroutineUniformInterface.getResource(i);
+                    subroutineUniforms.computeIfAbsent(shaderType, key -> new HashMap<>()).put(subroutineUniform.getName(), subroutineUniform);
                 }
             }
             return self();
@@ -166,7 +183,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public GlProgramInterfaces interfaces() {
-        if (interfaces == null && GlGraphics.CAPABILITIES.OpenGL43) {
+        if (interfaces == null) {
             interfaces = new GlProgramInterfaces(this);
         }
         return interfaces;
@@ -215,6 +232,12 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
             throw new NoSuchElementException("No uniform block of name find: " + name);
         }
         return new Gl31UniformBlock(this, index, name);
+    }
+
+    @Override
+    public <T extends SubroutineUniform<T>> T getSubroutineUniform(Shader.Type shaderType, String name) {
+
+        return null;
     }
 
     @Override

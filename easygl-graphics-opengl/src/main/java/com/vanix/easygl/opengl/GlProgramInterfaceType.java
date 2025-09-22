@@ -46,7 +46,7 @@ public enum GlProgramInterfaceType implements IntEnum {
         Class<?> resourceType = (Class<?>) TypeUtils.getTypeArguments(interfaceType, ProgramInterface.class)
                 .get(ProgramInterface.class.getTypeParameters()[0]);
         for (var ifc : resourceType.getInterfaces()) {
-            if (ProgramResource.class.isAssignableFrom(ifc)) {
+            if (ProgramResource.class.isAssignableFrom(ifc) && ifc.getDeclaringClass() == ProgramResource.class) {
                 var propertyKey = ProgramResource.PropertyKey.valueOf(ifc.getSimpleName());
                 properties.add(propertyKey);
             }

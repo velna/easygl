@@ -1,6 +1,9 @@
 package com.vanix.easygl.graphics;
 
-import com.vanix.easygl.core.*;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.Bindable;
+import com.vanix.easygl.core.Support;
+import com.vanix.easygl.graphics.program.SubroutineUniform;
 import com.vanix.easygl.graphics.program.Uniform;
 import com.vanix.easygl.graphics.program.UniformBlock;
 
@@ -100,6 +103,8 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     @Support(since = Version.GL31)
     UniformBlock getUniformBlock(String name);
+
+    <T extends SubroutineUniform<T>> T getSubroutineUniform(Shader.Type shaderType, String name);
 
     Program bindVertexAttribute(VertexAttribute vertexAttribute, String variableName);
 

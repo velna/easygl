@@ -24,7 +24,7 @@ public interface ProgramResource<T extends ProgramResource<T>> {
         IsRowMajor("IS_ROW_MAJOR"),
         AtomicCounterBufferIndex("ATOMIC_COUNTER_BUFFER_INDEX"),
         TextureBuffer("TEXTURE_BUFFER"),
-        BufferBinding("BUFFER_BINDING"),
+        BufferBinding("BUFFER_BINDING", false),
         BufferDataSize("BUFFER_DATA_SIZE"),
         NumActiveVariables("NUM_ACTIVE_VARIABLES"),
         ActiveVariables("ACTIVE_VARIABLES"),//array/GL_NUM_ACTIVE_VARIABLES
@@ -46,10 +46,20 @@ public interface ProgramResource<T extends ProgramResource<T>> {
         TransformFeedbackBufferStride("TRANSFORM_FEEDBACK_BUFFER_STRIDE");
         private final int value;
         private final int mask;
+        private final boolean cacheable;
 
         PropertyKey(String id) {
+            this(id, true);
+        }
+
+        PropertyKey(String id, boolean cacheable) {
             this.value = MetaSystem.Graphics.queryInt(id);
             this.mask = 1 << ordinal();
+            this.cacheable = cacheable;
+        }
+
+        public boolean isCacheable() {
+            return cacheable;
         }
 
         @Override

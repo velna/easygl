@@ -1,15 +1,15 @@
 package com.vanix.easygl.opengl.program;
 
-import com.vanix.easygl.commons.BitSet;
 import com.vanix.easygl.graphics.DataType;
-import com.vanix.easygl.graphics.*;
+import com.vanix.easygl.graphics.Program;
+import com.vanix.easygl.graphics.ProgramResource;
 import com.vanix.easygl.opengl.Cache;
 import com.vanix.easygl.opengl.GLX;
 import com.vanix.easygl.opengl.GlProgramInterfaceType;
+import org.lwjgl.system.MemoryStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.ToIntFunction;
 
 public abstract class BaseResource<T extends ProgramResource<T>> implements
         ProgramResource.Named<T>,
@@ -42,68 +42,65 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
         ProgramResource.LocationComponent<T>,
         ProgramResource.TransformFeedbackBufferIndex<T>,
         ProgramResource.TransformFeedbackBufferStride<T> {
+    protected static final ResourceCore<BaseResource<?>> GL43 = new ResourceCore<>() {};
     protected final Program program;
     protected final GlProgramInterfaceType interfaceType;
     protected final int index;
+    private final ResourceCore<BaseResource<?>> resourceCore;
     private String name;
-    private BitSet<PropertyKey> properties;
-    private int[] preloadValues;
+    private int[] activeVariables;
+    private DataType dataType;
+    private Integer[] valuesCache;
 
     public BaseResource(Program program, GlProgramInterfaceType interfaceType, int index) {
+        this(program, interfaceType, index, GL43);
+    }
+
+    public BaseResource(Program program, GlProgramInterfaceType interfaceType, int index, ResourceCore<BaseResource<?>> resourceCore) {
         this.program = program;
         this.interfaceType = interfaceType;
         this.index = index;
+        this.resourceCore = resourceCore;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T preLoad(PropertyKey... keys) {
-        if (preloadValues == null) {
-            preloadValues = new int[ProgramResource.PropertyKey.values().length];
-        }
-        if (this.properties == null) {
-            this.properties = BitSet.of((ToIntFunction<PropertyKey>) ProgramResource.PropertyKey::mask);
-        } else {
-            this.properties.clear();
-        }
         List<PropertyKey> propertyKeys = new ArrayList<>(keys.length);
         for (var key : keys) {
             if (interfaceType.properties().contains(key)) {
-                properties.add(key);
                 propertyKeys.add(key);
             }
         }
-        int[][] data = new int[2][propertyKeys.size()];
-        for (int i = 0; i < propertyKeys.size(); i++) {
-            data[0][i] = propertyKeys.get(i).value();
-        }
-        GLX.glGetProgramResourceiv(program.intHandle(), interfaceType.value(), index, data[0], null, data[1]);
-        for (int i = 0; i < data[1].length; i++) {
-            preloadValues[propertyKeys.get(i).ordinal()] = data[1][i];
-        }
-        return (T) this;
-    }
-
-    private int queryInt(PropertyKey key) {
-        if (preloadValues != null && properties.contains(key)) {
-            return preloadValues[key.ordinal()];
-        } else {
-            int[][] data = new int[2][1];
-            data[0][0] = key.value();
-            GLX.glGetProgramResourceiv(program.intHandle(), interfaceType.value(), index, data[0], null, data[1]);
-            return data[1][0];
+        try (var stack = MemoryStack.stackPush()) {
+            var values = resourceCore.doPreLoad(this, propertyKeys, stack);
+            for (int i = 0; i < values.limit(); i++) {
+                setCacheValue(propertyKeys.get(i), values.get(i));
+            }
+            return (T) this;
         }
     }
 
-    private boolean queryBoolean(PropertyKey key) {
-        if (preloadValues != null && properties.contains(key)) {
-            return preloadValues[key.ordinal()] != 0;
-        } else {
-            int[][] data = new int[2][1];
-            data[0][0] = key.value();
-            GLX.glGetProgramResourceiv(program.intHandle(), interfaceType.value(), index, data[0], null, data[1]);
-            return data[1][0] == GLX.GL_TRUE;
+    private int setCacheValue(PropertyKey key, int value) {
+        if (key.isCacheable()) {
+            if (valuesCache == null) {
+                valuesCache = new Integer[PropertyKey.values().length];
+            }
+            valuesCache[key.ordinal()] = value;
         }
+        return value;
+    }
+
+    private Integer getCacheValue(PropertyKey key) {
+        return valuesCache == null ? null : valuesCache[key.ordinal()];
+    }
+
+    protected boolean queryBoolean(PropertyKey key) {
+        return queryInt(key) == GLX.GL_TRUE;
+    }
+
+    protected int queryInt(PropertyKey key) {
+        Integer value = getCacheValue(key);
+        return value == null ? setCacheValue(key, resourceCore.doGet(this, key)) : value;
     }
 
     @Override
@@ -112,25 +109,97 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
     }
 
     @Override
-    public int index() {
-        return index;
-    }
-
-    @Override
     public String getName() {
         if (name == null) {
-            name = GLX.glGetProgramResourceName(program.intHandle(), interfaceType.value(), index);
+            name = resourceCore.doGetName(this);
         }
         return name;
     }
 
     @Override
     public int[] getActiveVariables() {
-        int activeResources = queryInt(ProgramResource.PropertyKey.ActiveVariables);
-        int[] props = new int[]{ProgramResource.PropertyKey.ActiveVariables.value()};
-        int[] data = new int[activeResources];
-        GLX.glGetProgramResourceiv(program.intHandle(), interfaceType.value(), index, props, null, data);
-        return data;
+        if (activeVariables == null) {
+            activeVariables = resourceCore.doGetActiveVariables(this);
+        }
+        return activeVariables;
+    }
+
+    @Override
+    public DataType getType() {
+        if (dataType == null) {
+            dataType = Cache.DataType.get(queryInt(PropertyKey.Type));
+        }
+        return dataType;
+    }
+
+    @Override
+    public int getArraySize() {
+        return queryInt(PropertyKey.ArraySize);
+    }
+
+    @Override
+    public int getArrayStride() {
+        return queryInt(PropertyKey.ArrayStride);
+    }
+
+    @Override
+    public int getAtomicCounterBufferIndex() {
+        return queryInt(PropertyKey.AtomicCounterBufferIndex);
+    }
+
+    @Override
+    public int getBlockIndex() {
+        return queryInt(PropertyKey.BlockIndex);
+    }
+
+    @Override
+    public int getBufferBinding() {
+        return queryInt(PropertyKey.BufferBinding);
+    }
+
+    @Override
+    public int getBufferDataSize() {
+        return queryInt(PropertyKey.BufferDataSize);
+    }
+
+    @Override
+    public int getCompatibleSubroutines() {
+        return queryInt(PropertyKey.CompatibleSubroutines);
+    }
+
+    @Override
+    public int getLocation() {
+        return queryInt(PropertyKey.Location);
+    }
+
+    @Override
+    public int getLocationComponent() {
+        return queryInt(PropertyKey.LocationComponent);
+    }
+
+    @Override
+    public int getLocationIndex() {
+        return queryInt(PropertyKey.LocationIndex);
+    }
+
+    @Override
+    public int getMatrixStride() {
+        return queryInt(PropertyKey.MatrixStride);
+    }
+
+    @Override
+    public int getNumActiveVariables() {
+        return queryInt(PropertyKey.NumActiveVariables);
+    }
+
+    @Override
+    public int getNumCompatibleSubroutines() {
+        return queryInt(PropertyKey.NumCompatibleSubroutines);
+    }
+
+    @Override
+    public int getOffset() {
+        return queryInt(PropertyKey.Offset);
     }
 
     @Override
@@ -139,138 +208,68 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
     }
 
     @Override
-    public DataType getType() {
-        return Cache.DataType.get(queryInt(ProgramResource.PropertyKey.Type));
-    }
-
-    @Override
-    public int getArraySize() {
-        return queryInt(ProgramResource.PropertyKey.ArraySize);
-    }
-
-    @Override
-    public int getOffset() {
-        return queryInt(ProgramResource.PropertyKey.Offset);
-    }
-
-    @Override
-    public int getBlockIndex() {
-        return queryInt(ProgramResource.PropertyKey.BlockIndex);
-    }
-
-    @Override
-    public int getArrayStride() {
-        return queryInt(ProgramResource.PropertyKey.ArrayStride);
-    }
-
-    @Override
-    public int getMatrixStride() {
-        return queryInt(ProgramResource.PropertyKey.MatrixStride);
-    }
-
-    @Override
-    public boolean isRowMajor() {
-        return queryBoolean(ProgramResource.PropertyKey.IsRowMajor);
-    }
-
-    @Override
-    public int getAtomicCounterBufferIndex() {
-        return queryInt(ProgramResource.PropertyKey.AtomicCounterBufferIndex);
-    }
-
-    @Override
-    public int getBufferBinding() {
-        return queryInt(ProgramResource.PropertyKey.BufferBinding);
-    }
-
-    @Override
-    public int getBufferDataSize() {
-        return queryInt(ProgramResource.PropertyKey.BufferDataSize);
-    }
-
-    @Override
-    public int getNumActiveVariables() {
-        return queryInt(ProgramResource.PropertyKey.NumActiveVariables);
-    }
-
-    @Override
-    public boolean isReferencedByVertexShader() {
-        return queryBoolean(ProgramResource.PropertyKey.ReferencedByVertexShader);
-    }
-
-    @Override
-    public boolean isReferencedByTessControlShader() {
-        return queryBoolean(ProgramResource.PropertyKey.ReferencedByTessControlShader);
-    }
-
-    @Override
-    public boolean isReferencedByTessEvaluationShader() {
-        return queryBoolean(ProgramResource.PropertyKey.ReferencedByTessEvaluationShader);
-    }
-
-    @Override
-    public boolean isReferencedByGeometryShader() {
-        return queryBoolean(ProgramResource.PropertyKey.ReferencedByGeometryShader);
-    }
-
-    @Override
-    public boolean isReferencedByFragmentShader() {
-        return queryBoolean(ProgramResource.PropertyKey.ReferencedByFragmentShader);
-    }
-
-    @Override
-    public boolean isReferencedByComputeShader() {
-        return queryBoolean(ProgramResource.PropertyKey.ReferencedByComputeShader);
-    }
-
-    @Override
-    public int getNumCompatibleSubroutines() {
-        return queryInt(ProgramResource.PropertyKey.NumCompatibleSubroutines);
-    }
-
-    @Override
-    public int getCompatibleSubroutines() {
-        return queryInt(ProgramResource.PropertyKey.CompatibleSubroutines);
-    }
-
-    @Override
-    public boolean isTopLevelArraySize() {
-        return queryBoolean(ProgramResource.PropertyKey.TopLevelArraySize);
-    }
-
-    @Override
     public int getTopLevelArrayStride() {
-        return queryInt(ProgramResource.PropertyKey.TopLevelArrayStride);
-    }
-
-    @Override
-    public int getLocation() {
-        return queryInt(ProgramResource.PropertyKey.Location);
-    }
-
-    @Override
-    public int getLocationIndex() {
-        return queryInt(ProgramResource.PropertyKey.LocationIndex);
-    }
-
-    @Override
-    public boolean isPerPatch() {
-        return queryBoolean(ProgramResource.PropertyKey.IsPerPatch);
-    }
-
-    @Override
-    public int getLocationComponent() {
-        return queryInt(ProgramResource.PropertyKey.LocationComponent);
+        return queryInt(PropertyKey.TopLevelArrayStride);
     }
 
     @Override
     public int getTransformFeedbackBufferIndex() {
-        return queryInt(ProgramResource.PropertyKey.TransformFeedbackBufferIndex);
+        return queryInt(PropertyKey.TransformFeedbackBufferIndex);
     }
 
     @Override
     public int getTransformFeedbackBufferStride() {
-        return queryInt(ProgramResource.PropertyKey.TransformFeedbackBufferStride);
+        return queryInt(PropertyKey.TransformFeedbackBufferStride);
+    }
+
+    @Override
+    public int index() {
+        return index;
+    }
+
+    @Override
+    public boolean isPerPatch() {
+        return queryBoolean(PropertyKey.IsPerPatch);
+    }
+
+    @Override
+    public boolean isReferencedByComputeShader() {
+        return queryBoolean(PropertyKey.ReferencedByComputeShader);
+    }
+
+    @Override
+    public boolean isReferencedByFragmentShader() {
+        return queryBoolean(PropertyKey.ReferencedByFragmentShader);
+    }
+
+    @Override
+    public boolean isReferencedByGeometryShader() {
+        return queryBoolean(PropertyKey.ReferencedByGeometryShader);
+    }
+
+    @Override
+    public boolean isReferencedByTessControlShader() {
+        return queryBoolean(PropertyKey.ReferencedByTessControlShader);
+    }
+
+    @Override
+    public boolean isReferencedByTessEvaluationShader() {
+        return queryBoolean(PropertyKey.ReferencedByTessEvaluationShader);
+    }
+
+    @Override
+    public boolean isReferencedByVertexShader() {
+        return queryBoolean(PropertyKey.ReferencedByVertexShader);
+    }
+
+    @Override
+    public boolean isRowMajor() {
+        return queryBoolean(PropertyKey.IsRowMajor);
+    }
+
+    @Override
+    public boolean isTopLevelArraySize() {
+        return queryBoolean(PropertyKey.TopLevelArraySize);
     }
 
 }

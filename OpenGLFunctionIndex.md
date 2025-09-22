@@ -259,7 +259,7 @@
 | glGetProgramInterfaceiv                        | ProgramInterface.getXXX()                                                          |
 | glGetProgramiv                                 | Program.getXXX()                                                                   |
 | glGetProgramPipeline                           | Pipeline.getActiveProgram()<br/>Pipeline.getShaderProgram()                        |
-| glGetProgramPipelineInfoLog                    | X                                                                                  |
+| glGetProgramPipelineInfoLog                    | Pipeline.getInfoLog()                                                              |
 | glGetProgramPipelineiv                         | Pipeline.getActiveProgram()<br/>Pipeline.getShaderProgram()                        |
 | glGetProgramResource                           | ProgramResource.XXX.getXXX()                                                       |
 | glGetProgramResourceIndex                      | ProgramInterface.Named.getResource()                                               |

@@ -1,7 +1,9 @@
 package com.vanix.easygl.opengl.program;
 
 import com.vanix.easygl.commons.util.LazyList;
-import com.vanix.easygl.graphics.*;
+import com.vanix.easygl.graphics.Program;
+import com.vanix.easygl.graphics.ProgramInterface;
+import com.vanix.easygl.graphics.ProgramResource;
 import com.vanix.easygl.opengl.GLX;
 import com.vanix.easygl.opengl.GlProgramInterfaceType;
 import com.vanix.easygl.opengl.Invalidatable;
@@ -14,14 +16,25 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements Inv
         ProgramInterface.Named<T>,
         ProgramInterface.Variable<T>,
         ProgramInterface.SubroutineUniform<T> {
+    protected static final InterfaceCore<BaseInterface<?>> GL43 = new InterfaceCore<>() {};
     protected final Program program;
-    private final GlProgramInterfaceType type;
+    protected final GlProgramInterfaceType type;
+    protected final InterfaceCore<BaseInterface<?>> interfaceCore;
     private final List<T> resources = new ArrayList<>();
     private final List<T> resourcesLazy = LazyList.lazyList(resources, this::newResource);
 
     public BaseInterface(Program program, GlProgramInterfaceType type) {
+        this(program, type, GL43);
+    }
+
+    public BaseInterface(Program program, GlProgramInterfaceType type, InterfaceCore<BaseInterface<?>> interfaceCore) {
         this.program = program;
         this.type = type;
+        this.interfaceCore = interfaceCore;
+    }
+
+    public Program program() {
+        return program;
     }
 
     protected abstract T newResource(int index);
@@ -52,22 +65,22 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements Inv
 
     @Override
     public T getResource(String name) {
-        int index = GLX.glGetProgramResourceIndex(program.intHandle(), type.value(), name);
+        int index = interfaceCore.getIndexByName(this, name);
         return index == GLX.GL_INVALID_INDEX ? null : resourcesLazy.get(index);
     }
 
     @Override
     public int getActiveResources() {
-        return GLX.glGetProgramInterfacei(program.intHandle(), GLX.GL_ACTIVE_RESOURCES, type.value());
+        return interfaceCore.getActiveResources(this);
     }
 
     @Override
     public int getMaxNumActiveVariables() {
-        return GLX.glGetProgramInterfacei(program.intHandle(), GLX.GL_MAX_NUM_ACTIVE_VARIABLES, type.value());
+        return interfaceCore.getMaxNumActiveVariables(this);
     }
 
     @Override
     public int getMaxNumCompatibleSubroutines() {
-        return GLX.glGetProgramInterfacei(program.intHandle(), GLX.GL_MAX_NUM_COMPATIBLE_SUBROUTINES, type.value());
+        return interfaceCore.getMaxNumCompatibleSubroutines(this);
     }
 }
