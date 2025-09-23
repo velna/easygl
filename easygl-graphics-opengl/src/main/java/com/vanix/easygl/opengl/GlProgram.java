@@ -4,6 +4,7 @@ import com.vanix.easygl.commons.util.BeanUtils;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.graphics.*;
+import com.vanix.easygl.graphics.program.Subroutine;
 import com.vanix.easygl.graphics.program.SubroutineUniform;
 import com.vanix.easygl.graphics.program.Uniform;
 import com.vanix.easygl.graphics.program.UniformBlock;
@@ -129,7 +130,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
                         var subroutineUniformCount = subroutineUniformInterface.getActiveResources();
                         for (var i = 0; i < subroutineUniformCount; i++) {
                             var subroutineUniform = subroutineUniformInterface.getResource(i);
-                            subroutineUniforms.computeIfAbsent(shaderType, key -> new HashMap<>()).put(subroutineUniform.getName(), subroutineUniform);
+                            subroutineUniforms.computeIfAbsent(shaderType, key -> new LinkedHashMap<>()).put(subroutineUniform.getName(), subroutineUniform);
                         }
                     }
                 }
@@ -257,6 +258,24 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     @Override
     public SubroutineUniform getSubroutineUniform(Shader.Type shaderType, String name) {
         return subroutineUniforms.getOrDefault(shaderType, Collections.emptyMap()).get(name);
+    }
+
+    @Override
+    public Program loadSubroutineUniforms(Shader.Type shaderType, List<Subroutine> subroutines) {
+        if (subroutineUniforms.getOrDefault(shaderType, Collections.emptyMap()).isEmpty()) {
+            return this;
+        }
+        assertBinding();
+        try (var stack = MemoryStack.stackPush()) {
+            var sus = subroutineUniforms.get(shaderType);
+            var indices = stack.mallocInt(sus.size());
+            for (var su : sus.values()) {
+                indices.put(su.index());
+            }
+            GLX.glUniformSubroutinesuiv(shaderType.value(), indices.clear());
+            GLX.checkError();
+        }
+        return this;
     }
 
     @Override

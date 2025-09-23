@@ -249,9 +249,9 @@
 | glGetnUniformfv                                | X                                                                                  |
 | glGetnUniformiv                                | X                                                                                  |
 | glGetnUniformuiv                               | X                                                                                  |
-| glGetObjectLabel                               | X                                                                                  |
-| glGetObjectPtrLabel                            | X                                                                                  |
-| glGetPointerv                                  | X                                                                                  |
+| glGetObjectLabel                               | XX                                                                                 |
+| glGetObjectPtrLabel                            | XX                                                                                 |
+| glGetPointerv                                  | XX                                                                                 |
 | glGetProgram                                   | Program.getXXX()                                                                   |
 | glGetProgramBinary                             | Program.getBinary()                                                                |
 | glGetProgramInfoLog                            | Program.link()                                                                     |
@@ -267,8 +267,8 @@
 | glGetProgramResourceLocation                   | X Use ProgramResource.Location.getLocation()                                       |
 | glGetProgramResourceLocationIndex              | X Use ProgramResource.LocationIndex.getLocationIndex()                             |
 | glGetProgramResourceName                       | ProgramResource.Named.getName()                                                    |
-| glGetProgramStage                              | X                                                                                  |
-| glGetProgramStageiv                            | X                                                                                  |
+| glGetProgramStage                              | SubroutineUniformInterface.getXXX()                                                |
+| glGetProgramStageiv                            | SubroutineUniformInterface.getXXX()                                                |
 | glGetQueryBufferObjecti64v                     | X DSA                                                                              |
 | glGetQueryBufferObjectiv                       | X DSA                                                                              |
 | glGetQueryBufferObjectui64v                    | X DSA                                                                              |
@@ -295,8 +295,8 @@
 | glGetShaderSource                              | Shader.source()                                                                    |
 | glGetString                                    | X                                                                                  |
 | glGetStringi                                   | X                                                                                  |
-| glGetSubroutineIndex                           | X                                                                                  |
-| glGetSubroutineUniformLocation                 | X                                                                                  |
+| glGetSubroutineIndex                           | SubroutineUniformInterface.getResource()                                           |
+| glGetSubroutineUniformLocation                 | SubroutineUniformInterface.getLocation()                                           |
 | glGetSync                                      | Sync.isSignaled()                                                                  |
 | glGetSynciv                                    | Sync.isSignaled()                                                                  |
 | glGetTexImage                                  | TextureOps.GetImage.getImage()                                                     |
@@ -354,20 +354,20 @@
 | glInvalidateSubFramebuffer                     | FrameBuffer.invalidate()<br/>DefaultFrameBuffer.invalidate()                       |
 | glInvalidateTexImage                           | X                                                                                  |
 | glInvalidateTexSubImage                        |                                                                                    |
-| glIsBuffer                                     | X                                                                                  |
+| glIsBuffer                                     | XX                                                                                 |
 | glIsEnabled                                    | .                                                                                  |
 | glIsEnabledi                                   | .                                                                                  |
-| glIsFramebuffer                                | X                                                                                  |
-| glIsProgram                                    | X                                                                                  |
-| glIsProgramPipeline                            | X                                                                                  |
-| glIsQuery                                      | X                                                                                  |
-| glIsRenderbuffer                               | X                                                                                  |
-| glIsSampler                                    | X                                                                                  |
-| glIsShader                                     | X                                                                                  |
-| glIsSync                                       | X                                                                                  |
-| glIsTexture                                    | X                                                                                  |
-| glIsTransformFeedback                          | X                                                                                  |
-| glIsVertexArray                                | X                                                                                  |
+| glIsFramebuffer                                | XX                                                                                 |
+| glIsProgram                                    | XX                                                                                 |
+| glIsProgramPipeline                            | XX                                                                                 |
+| glIsQuery                                      | XX                                                                                 |
+| glIsRenderbuffer                               | XX                                                                                 |
+| glIsSampler                                    | XX                                                                                 |
+| glIsShader                                     | XX                                                                                 |
+| glIsSync                                       | XX                                                                                 |
+| glIsTexture                                    | XX                                                                                 |
+| glIsTransformFeedback                          | XX                                                                                 |
+| glIsVertexArray                                | XX                                                                                 |
 | glLineWidth                                    |                                                                                    |
 | glLinkProgram                                  |                                                                                    |
 | glLogicOp                                      |                                                                                    |
@@ -395,8 +395,8 @@
 | glNamedFramebufferTextureLayer                 | X DSA                                                                              |
 | glNamedRenderbufferStorage                     | X DSA                                                                              |
 | glNamedRenderbufferStorageMultisample          | X DSA                                                                              |
-| glObjectLabel                                  | X                                                                                  |
-| glObjectPtrLabel                               | X                                                                                  |
+| glObjectLabel                                  | XX                                                                                 |
+| glObjectPtrLabel                               | XX                                                                                 |
 | glPatchParameter                               | Graphics.setPathXXX()                                                              |
 | glPatchParameterfv                             | Graphics.setPathXXX()                                                              |
 | glPatchParameteri                              | Graphics.setPathXXX()                                                              |
@@ -562,8 +562,8 @@
 | glUniformMatrix4fv                             |                                                                                    |
 | glUniformMatrix4x2fv                           |                                                                                    |
 | glUniformMatrix4x3fv                           |                                                                                    |
-| glUniformSubroutines                           | X                                                                                  |
-| glUniformSubroutinesuiv                        | X                                                                                  |
+| glUniformSubroutines                           | Program loadSubroutineUniforms()                                                   |
+| glUniformSubroutinesuiv                        | Program loadSubroutineUniforms()                                                   |
 | glUnmapBuffer                                  |                                                                                    |
 | glUnmapNamedBuffer                             | X DSA                                                                              |
 | glUseProgram                                   |                                                                                    |
