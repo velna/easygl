@@ -104,7 +104,7 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     @Support(since = Version.GL31)
     UniformBlock getUniformBlock(String name);
 
-    <T extends SubroutineUniform<T>> T getSubroutineUniform(Shader.Type shaderType, String name);
+    SubroutineUniform getSubroutineUniform(Shader.Type shaderType, String name);
 
     Program bindVertexAttribute(VertexAttribute vertexAttribute, String variableName);
 

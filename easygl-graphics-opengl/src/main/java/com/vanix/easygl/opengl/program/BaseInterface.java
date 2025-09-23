@@ -14,8 +14,7 @@ import java.util.List;
 
 public abstract class BaseInterface<T extends ProgramResource<T>> implements Invalidatable,
         ProgramInterface.Named<T>,
-        ProgramInterface.Variable<T>,
-        ProgramInterface.SubroutineUniform<T> {
+        ProgramInterface.Variable<T> {
     protected static final InterfaceCore<BaseInterface<?>> GL43 = new InterfaceCore<>() {};
     protected final Program program;
     protected final GlProgramInterfaceType type;
@@ -80,8 +79,4 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements Inv
         return interfaceCore.getMaxNumActiveVariables(this);
     }
 
-    @Override
-    public int getMaxNumCompatibleSubroutines() {
-        return interfaceCore.getMaxNumCompatibleSubroutines(this);
-    }
 }

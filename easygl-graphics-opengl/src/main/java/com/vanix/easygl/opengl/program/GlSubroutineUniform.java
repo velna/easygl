@@ -1,6 +1,7 @@
 package com.vanix.easygl.opengl.program;
 
 import com.vanix.easygl.graphics.Program;
+import com.vanix.easygl.graphics.Shader;
 import com.vanix.easygl.graphics.program.Subroutine;
 import com.vanix.easygl.graphics.program.SubroutineUniform;
 import com.vanix.easygl.opengl.GLX;
@@ -12,10 +13,10 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GlSubroutineUniform<T extends SubroutineUniform<T>> extends BaseResource<T> implements SubroutineUniform<T> {
-    private static final ResourceCore<GlSubroutineUniform<?>> GL40 = new ResourceCore<>() {
+public class GlSubroutineUniform extends BaseResource<SubroutineUniform> implements SubroutineUniform {
+    private static final ResourceCore<GlSubroutineUniform> GL40 = new ResourceCore<>() {
         @Override
-        public IntBuffer doPreLoad(GlSubroutineUniform<?> resource, List<PropertyKey> keys, MemoryStack stack) {
+        public IntBuffer doPreLoad(GlSubroutineUniform resource, List<PropertyKey> keys, MemoryStack stack) {
             var valueBuf = stack.callocInt(keys.size());
             for (int i = 0; i < keys.size(); i++) {
                 var key = keys.get(i);
@@ -34,7 +35,7 @@ public abstract class GlSubroutineUniform<T extends SubroutineUniform<T>> extend
         }
 
         @Override
-        public int doGet(GlSubroutineUniform<?> resource, PropertyKey key) {
+        public int doGet(GlSubroutineUniform resource, PropertyKey key) {
             if (key == PropertyKey.Location) {
                 return GLX.glGetSubroutineUniformLocation(resource.program.intHandle(), resource.shaderStage().value(), resource.getName());
             } else {
@@ -48,20 +49,35 @@ public abstract class GlSubroutineUniform<T extends SubroutineUniform<T>> extend
         }
 
         @Override
-        public String doGetName(GlSubroutineUniform<?> resource) {
+        public String doGetName(GlSubroutineUniform resource) {
             return GLX.glGetActiveSubroutineUniformName(resource.program.intHandle(), resource.shaderStage().value(), resource.index);
         }
 
         @Override
-        public int[] doGetActiveVariables(GlSubroutineUniform<?> resource) {
+        public int[] doGetActiveVariables(GlSubroutineUniform resource) {
             throw new UnsupportedOperationException();
         }
     };
+
+    private final Shader.Type shaderStage;
     private List<Subroutine> compatibleSubroutines;
 
     @SuppressWarnings("unchecked")
     public GlSubroutineUniform(Program program, GlProgramInterfaceType interfaceType, int index) {
         super(program, interfaceType, index, (ResourceCore<BaseResource<?>>) (GlGraphics.CAPABILITIES.OpenGL43 ? GL43 : GL40));
+        shaderStage = switch (interfaceType) {
+            case VertexSubroutineUniform -> Shader.Type.Vertex;
+            case FragmentSubroutineUniform -> Shader.Type.Fragment;
+            case TessEvaluationSubroutineUniform -> Shader.Type.TessEvaluation;
+            case TessControlSubroutineUniform -> Shader.Type.TessControl;
+            case GeometrySubroutineUniform -> Shader.Type.Geometry;
+            default -> throw new IllegalArgumentException();
+        };
+    }
+
+    @Override
+    public Shader.Type shaderStage() {
+        return shaderStage;
     }
 
     @Override

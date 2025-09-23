@@ -18,7 +18,7 @@ import java.util.*;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
     private final Map<String, Uniform> uniforms = new LinkedHashMap<>();
-    private final Map<Shader.Type, Map<String, SubroutineUniform<?>>> subroutineUniforms = new EnumMap<>(Shader.Type.class);
+    private final Map<Shader.Type, Map<String, SubroutineUniform>> subroutineUniforms = new EnumMap<>(Shader.Type.class);
     private GlProgramInterfaces interfaces;
 
     protected GlProgram() {
@@ -113,19 +113,23 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
                     uniforms.put(name, new Gl20Uniform(this, name, i, Cache.DataType.get(type.get()), size.get()));
                 }
             }
-            for (var shaderType : Shader.Type.values()) {
-                var subroutineUniformInterface = switch (shaderType) {
-                    case Vertex -> interfaces().vertexSubroutineUniform();
-                    case Fragment -> interfaces().fragmentSubroutineUniform();
-                    case Geometry -> interfaces().geometrySubroutineUniform();
-                    case TessControlShader -> interfaces().tessControlSubroutineUniform();
-                    case TessEvaluationShader -> interfaces().tessEvaluationSubroutineUniform();
-                    case ComputeShader -> interfaces().computeSubroutineUniform();
-                };
-                var subroutineUniformCount = subroutineUniformInterface.getActiveResources();
-                for (var i = 0; i < subroutineUniformCount; i++) {
-                    var subroutineUniform = subroutineUniformInterface.getResource(i);
-                    subroutineUniforms.computeIfAbsent(shaderType, key -> new HashMap<>()).put(subroutineUniform.getName(), subroutineUniform);
+            if (GlGraphics.CAPABILITIES.OpenGL40) {
+                for (var shaderType : Shader.Type.values()) {
+                    var subroutineUniformInterface = switch (shaderType) {
+                        case Vertex -> interfaces().vertexSubroutineUniform();
+                        case Fragment -> interfaces().fragmentSubroutineUniform();
+                        case Geometry -> interfaces().geometrySubroutineUniform();
+                        case TessControl -> interfaces().tessControlSubroutineUniform();
+                        case TessEvaluation -> interfaces().tessEvaluationSubroutineUniform();
+                        case Compute -> null;
+                    };
+                    if (subroutineUniformInterface != null) {
+                        var subroutineUniformCount = subroutineUniformInterface.getActiveResources();
+                        for (var i = 0; i < subroutineUniformCount; i++) {
+                            var subroutineUniform = subroutineUniformInterface.getResource(i);
+                            subroutineUniforms.computeIfAbsent(shaderType, key -> new HashMap<>()).put(subroutineUniform.getName(), subroutineUniform);
+                        }
+                    }
                 }
             }
             return self();
@@ -235,9 +239,8 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public <T extends SubroutineUniform<T>> T getSubroutineUniform(Shader.Type shaderType, String name) {
-
-        return null;
+    public SubroutineUniform getSubroutineUniform(Shader.Type shaderType, String name) {
+        return subroutineUniforms.getOrDefault(shaderType, Collections.emptyMap()).get(name);
     }
 
     @Override

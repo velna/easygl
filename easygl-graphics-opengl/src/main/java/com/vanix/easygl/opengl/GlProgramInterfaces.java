@@ -93,33 +93,28 @@ public class GlProgramInterfaces implements ProgramInterfaces {
     }
 
     @Override
-    public VertexSubroutineUniformInterface vertexSubroutineUniform() {
+    public SubroutineUniformInterface vertexSubroutineUniform() {
         return getInterface(GlProgramInterfaceType.VertexSubroutineUniform);
     }
 
     @Override
-    public TessControlSubroutineUniformInterface tessControlSubroutineUniform() {
+    public SubroutineUniformInterface tessControlSubroutineUniform() {
         return getInterface(GlProgramInterfaceType.TessControlSubroutineUniform);
     }
 
     @Override
-    public TessEvaluationSubroutineUniformInterface tessEvaluationSubroutineUniform() {
+    public SubroutineUniformInterface tessEvaluationSubroutineUniform() {
         return getInterface(GlProgramInterfaceType.TessEvaluationSubroutineUniform);
     }
 
     @Override
-    public GeometrySubroutineUniformInterface geometrySubroutineUniform() {
+    public SubroutineUniformInterface geometrySubroutineUniform() {
         return getInterface(GlProgramInterfaceType.GeometrySubroutineUniform);
     }
 
     @Override
-    public FragmentSubroutineUniformInterface fragmentSubroutineUniform() {
+    public SubroutineUniformInterface fragmentSubroutineUniform() {
         return getInterface(GlProgramInterfaceType.FragmentSubroutineUniform);
-    }
-
-    @Override
-    public ComputeSubroutineUniformInterface computeSubroutineUniform() {
-        return getInterface(GlProgramInterfaceType.ComputeSubroutineUniform);
     }
 
     @Override

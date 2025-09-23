@@ -21,9 +21,9 @@ public interface ProgramInterfaces {
             case Fragment -> fragmentSubroutine();
             case Vertex -> vertexSubroutine();
             case Geometry -> geometrySubroutine();
-            case TessControlShader -> tessControlSubroutine();
-            case TessEvaluationShader -> tessEvaluationSubroutine();
-            case ComputeShader -> computeSubroutine();
+            case TessControl -> tessControlSubroutine();
+            case TessEvaluation -> tessEvaluationSubroutine();
+            case Compute -> computeSubroutine();
         };
     }
 
@@ -39,17 +39,15 @@ public interface ProgramInterfaces {
 
     SubroutineInterface computeSubroutine();
 
-    VertexSubroutineUniformInterface vertexSubroutineUniform();
+    SubroutineUniformInterface vertexSubroutineUniform();
 
-    TessControlSubroutineUniformInterface tessControlSubroutineUniform();
+    SubroutineUniformInterface tessControlSubroutineUniform();
 
-    TessEvaluationSubroutineUniformInterface tessEvaluationSubroutineUniform();
+    SubroutineUniformInterface tessEvaluationSubroutineUniform();
 
-    GeometrySubroutineUniformInterface geometrySubroutineUniform();
+    SubroutineUniformInterface geometrySubroutineUniform();
 
-    FragmentSubroutineUniformInterface fragmentSubroutineUniform();
-
-    ComputeSubroutineUniformInterface computeSubroutineUniform();
+    SubroutineUniformInterface fragmentSubroutineUniform();
 
     TransformFeedbackVaryingInterface transformFeedbackVarying();
 

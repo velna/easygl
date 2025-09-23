@@ -3,11 +3,11 @@ package com.vanix.easygl.graphics.program;
 import com.vanix.easygl.graphics.ProgramResource;
 import com.vanix.easygl.graphics.Shader;
 
-public interface SubroutineUniform<T extends SubroutineUniform<T>> extends
-        ProgramResource.Named<T>,
-        ProgramResource.ArraySize<T>,
-        ProgramResource.NumCompatibleSubroutines<T>,
-        ProgramResource.CompatibleSubroutines<T>,
-        ProgramResource.Location<T> {
+public interface SubroutineUniform extends
+        ProgramResource.Named<SubroutineUniform>,
+        ProgramResource.ArraySize<SubroutineUniform>,
+        ProgramResource.NumCompatibleSubroutines<SubroutineUniform>,
+        ProgramResource.CompatibleSubroutines<SubroutineUniform>,
+        ProgramResource.Location<SubroutineUniform> {
     Shader.Type shaderStage();
 }

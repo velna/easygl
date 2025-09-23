@@ -29,9 +29,6 @@ public interface ProgramInterface<T extends ProgramResource<T>> {
         int getMaxNumActiveVariables();
     }
 
-    interface SubroutineUniform<T extends ProgramResource<T>> extends Named<T> {
-        int getMaxNumCompatibleSubroutines();
-    }
     //endregion
 
 }

@@ -16,11 +16,11 @@ public interface Shader extends Handle {
         Geometry("GEOMETRY_SHADER"),
         Fragment("FRAGMENT_SHADER"),
         @Support(since = Version.GL40)
-        TessControlShader("TESS_CONTROL_SHADER"),
+        TessControl("TESS_CONTROL_SHADER"),
         @Support(since = Version.GL40)
-        TessEvaluationShader("TESS_EVALUATION_SHADER"),
+        TessEvaluation("TESS_EVALUATION_SHADER"),
         @Support(since = Version.GL43)
-        ComputeShader("COMPUTE_SHADER");
+        Compute("COMPUTE_SHADER");
 
         private final int value;
 
