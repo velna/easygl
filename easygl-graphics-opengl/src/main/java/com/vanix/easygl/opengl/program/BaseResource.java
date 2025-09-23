@@ -10,6 +10,7 @@ import org.lwjgl.system.MemoryStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class BaseResource<T extends ProgramResource<T>> implements
         ProgramResource.Named<T>,
@@ -129,6 +130,19 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
             dataType = Cache.DataType.get(queryInt(PropertyKey.Type));
         }
         return dataType;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        BaseResource<?> that = (BaseResource<?>) object;
+        return index == that.index && Objects.equals(program, that.program) && interfaceType == that.interfaceType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(program, interfaceType, index);
     }
 
     @Override

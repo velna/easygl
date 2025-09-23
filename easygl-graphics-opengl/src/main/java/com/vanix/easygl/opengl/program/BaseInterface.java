@@ -11,6 +11,7 @@ import com.vanix.easygl.opengl.Invalidatable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class BaseInterface<T extends ProgramResource<T>> implements Invalidatable,
         ProgramInterface.Named<T>,
@@ -41,6 +42,11 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements Inv
 
     @Override
     public void invalidate() {
+        for (var resource : resources) {
+            if (resource instanceof Invalidatable invalidatable) {
+                invalidatable.invalidate();
+            }
+        }
         resources.clear();
     }
 
@@ -79,4 +85,16 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements Inv
         return interfaceCore.getMaxNumActiveVariables(this);
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        BaseInterface<?> that = (BaseInterface<?>) object;
+        return Objects.equals(program, that.program) && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(program, type);
+    }
 }

@@ -19,6 +19,7 @@ import java.util.*;
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
     private final Map<String, Uniform> uniforms = new LinkedHashMap<>();
     private final Map<Shader.Type, Map<String, SubroutineUniform>> subroutineUniforms = new EnumMap<>(Shader.Type.class);
+    private int version;
     private GlProgramInterfaces interfaces;
 
     protected GlProgram() {
@@ -93,6 +94,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
                 String infoLog = GLX.glGetProgramInfoLog(program);
                 throw new GraphicsException("error link program: " + infoLog);
             }
+            version++;
             uniforms.clear();
             subroutineUniforms.clear();
             if (interfaces != null) {
@@ -134,6 +136,20 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
             }
             return self();
         }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        GlProgram glProgram = (GlProgram) object;
+        return version == glProgram.version;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), version);
     }
 
     @Override

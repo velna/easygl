@@ -7,13 +7,14 @@ import com.vanix.easygl.graphics.program.SubroutineUniform;
 import com.vanix.easygl.opengl.GLX;
 import com.vanix.easygl.opengl.GlGraphics;
 import com.vanix.easygl.opengl.GlProgramInterfaceType;
+import com.vanix.easygl.opengl.Invalidatable;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GlSubroutineUniform extends BaseResource<SubroutineUniform> implements SubroutineUniform {
+public class GlSubroutineUniform extends BaseResource<SubroutineUniform> implements SubroutineUniform, Invalidatable {
     private static final ResourceCore<GlSubroutineUniform> GL40 = new ResourceCore<>() {
         @Override
         public IntBuffer doPreLoad(GlSubroutineUniform resource, List<PropertyKey> keys, MemoryStack stack) {
@@ -78,6 +79,11 @@ public class GlSubroutineUniform extends BaseResource<SubroutineUniform> impleme
     @Override
     public Shader.Type shaderStage() {
         return shaderStage;
+    }
+
+    @Override
+    public void invalidate() {
+        compatibleSubroutines = null;
     }
 
     @Override
