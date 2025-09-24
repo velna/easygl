@@ -57,7 +57,10 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.TexTarge
     int width(int level);
     // endregion
 
-    // region Invalidate Sub
+    // region Invalidate
+    @Support(since = Version.GL43)
+    T invalidate(int level);
+
     T invalidateSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth);
 
     default T invalidateSub1D(int level, int xOffset, int width) {

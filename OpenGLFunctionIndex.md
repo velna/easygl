@@ -352,8 +352,8 @@
 | glInvalidateNamedFramebufferData               | X DSA                                                                              |
 | glInvalidateNamedFramebufferSubData            | X DSA                                                                              |
 | glInvalidateSubFramebuffer                     | FrameBuffer.invalidate()<br/>DefaultFrameBuffer.invalidate()                       |
-| glInvalidateTexImage                           | X                                                                                  |
-| glInvalidateTexSubImage                        |                                                                                    |
+| glInvalidateTexImage                           | Texture.invalidate()                                                               |
+| glInvalidateTexSubImage                        | Texture.invalidateSubXXX()                                                         |
 | glIsBuffer                                     | XX                                                                                 |
 | glIsEnabled                                    | .                                                                                  |
 | glIsEnabledi                                   | .                                                                                  |
@@ -368,11 +368,11 @@
 | glIsTexture                                    | XX                                                                                 |
 | glIsTransformFeedback                          | XX                                                                                 |
 | glIsVertexArray                                | XX                                                                                 |
-| glLineWidth                                    |                                                                                    |
-| glLinkProgram                                  |                                                                                    |
-| glLogicOp                                      |                                                                                    |
-| glMapBuffer                                    |                                                                                    |
-| glMapBufferRange                               |                                                                                    |
+| glLineWidth                                    | Graphics.setLineWidth()                                                            |
+| glLinkProgram                                  | Program.link()                                                                     |
+| glLogicOp                                      | LogicalOperation.setOp()                                                           |
+| glMapBuffer                                    | Buffer.map()                                                                       |
+| glMapBufferRange                               | Buffer.mapRange()                                                                  |
 | glMapNamedBuffer                               | X DSA                                                                              |
 | glMapNamedBufferRange                          | X DSA                                                                              |
 | glMemoryBarrier                                | Graphics.setMemoryBarrier()                                                        |

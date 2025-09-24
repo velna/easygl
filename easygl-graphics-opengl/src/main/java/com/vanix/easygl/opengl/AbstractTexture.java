@@ -125,6 +125,12 @@ public abstract class AbstractTexture<T extends Texture<T>> extends AbstractBind
     }
 
     @Override
+    public T invalidate(int level) {
+        GLX.glInvalidateTexImage(intHandle(), level);
+        return self();
+    }
+
+    @Override
     public T invalidateSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth) {
         GLX.glInvalidateTexSubImage(intHandle(), level, xOffset, yOffset, zOffset, width, height, depth);
         GLX.checkError();
