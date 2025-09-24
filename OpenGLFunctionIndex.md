@@ -172,11 +172,11 @@
 | glFlushMappedNamedBufferRange                  | X DSA                                                                              |
 | glFramebufferParameteri                        | FrameBuffer.setXXX()                                                               |
 | glFramebufferRenderbuffer                      | BaseFrameBuffer.attach()                                                           |
-| glFramebufferTexture                           | * Won't implement, use overrides of BaseFrameBuffer.attach()                       |
-| glFramebufferTexture1D                         | BaseFrameBuffer.attach()                                                           |
-| glFramebufferTexture2D                         | BaseFrameBuffer.attach()                                                           |
-| glFramebufferTexture3D                         | BaseFrameBuffer.attach()                                                           |
-| glFramebufferTextureLayer                      | BaseFrameBuffer.attach()                                                           |
+| glFramebufferTexture                           | FrameBuffer.attachLayered()                                                        |
+| glFramebufferTexture1D                         | FrameBuffer.attach()                                                               |
+| glFramebufferTexture2D                         | FrameBuffer.attach()                                                               |
+| glFramebufferTexture3D                         | FrameBuffer.attach()                                                               |
+| glFramebufferTextureLayer                      | FrameBuffer.attachLayer()                                                          |
 | glFrontFace                                    | Graphics setFrontFaceDirection()                                                   |
 | glGenBuffers                                   | Buffer.of()                                                                        |
 | glGenerateMipmap                               | TextureOps.GenerateMipmap.generateMipmap()                                         |

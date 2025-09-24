@@ -2,9 +2,6 @@ package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.core.AbstractMultiTargetBindable;
-import com.vanix.easygl.graphics.DataType;
-import com.vanix.easygl.graphics.GraphicsException;
-import com.vanix.easygl.graphics.PixelFormat;
 import com.vanix.easygl.graphics.*;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
@@ -25,48 +22,6 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
     @SuppressWarnings("unchecked")
     protected T self() {
         return (T) this;
-    }
-
-    @Override
-    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture1D texture1D, int level) {
-        GLX.glFramebufferTexture1D(target.value(), attachment.value(), texture1D.target().value(), texture1D.intHandle(), level);
-        GLX.checkError();
-        return self();
-    }
-
-    @Override
-    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2D texture, int level) {
-        GLX.glFramebufferTexture2D(target.value(), attachment.value(), texture.target().value(), texture.intHandle(), level);
-        GLX.checkError();
-        return self();
-    }
-
-    @Override
-    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureRectangle textureRectangle) {
-        GLX.glFramebufferTexture2D(target.value(), attachment.value(), textureRectangle.target().value(), textureRectangle.intHandle(), 0);
-        GLX.checkError();
-        return self();
-    }
-
-    @Override
-    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2DMultiSample textureMultiSample) {
-        GLX.glFramebufferTexture2D(target.value(), attachment.value(), textureMultiSample.target().value(), textureMultiSample.intHandle(), 0);
-        GLX.checkError();
-        return self();
-    }
-
-    @Override
-    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCubeMap.Face face, int level) {
-        GLX.glFramebufferTexture2D(target.value(), attachment.value(), face.target().value(), face.cubeMap().intHandle(), level);
-        GLX.checkError();
-        return self();
-    }
-
-    @Override
-    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture3D texture3D, int level, int layer) {
-        GLX.glFramebufferTexture3D(target.value(), attachment.value(), texture3D.target().value(), texture3D.intHandle(), level, layer);
-        GLX.checkError();
-        return self();
     }
 
     @Override

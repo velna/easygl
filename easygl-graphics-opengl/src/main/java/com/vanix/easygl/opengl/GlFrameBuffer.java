@@ -18,7 +18,88 @@ public class GlFrameBuffer extends GlBaseFrameBuffer<FrameBuffer> implements Fra
         return this;
     }
 
-    private FrameBuffer attach0(FrameInnerBuffer.Attachment attachment, Texture<?> texture, int level, int layer) {
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture1D texture, int level) {
+        assertBinding();
+        GLX.glFramebufferTexture1D(target.value(), attachment.value(), texture.target().value(), texture.intHandle(), level);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2D texture, int level) {
+        assertBinding();
+        GLX.glFramebufferTexture2D(target.value(), attachment.value(), texture.target().value(), texture.intHandle(), level);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, TextureRectangle texture) {
+        assertBinding();
+        GLX.glFramebufferTexture2D(target.value(), attachment.value(), texture.target().value(), texture.intHandle(), 0);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2DMultiSample texture) {
+        assertBinding();
+        GLX.glFramebufferTexture2D(target.value(), attachment.value(), texture.target().value(), texture.intHandle(), 0);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, TextureCubeMap.Face texture, int level) {
+        assertBinding();
+        GLX.glFramebufferTexture2D(target.value(), attachment.value(), texture.target().value(), texture.cubeMap().intHandle(), level);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture3D texture, int level, int layer) {
+        assertBinding();
+        GLX.glFramebufferTexture3D(target.value(), attachment.value(), texture.target().value(), texture.intHandle(), level, layer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer detach(FrameInnerBuffer.Attachment attachment, Texture.TexTarget<?> textureTarget, int level) {
+        assertBinding();
+        int targetValue = textureTarget.value();
+        if (targetValue == Texture1D.Target.value()) {
+            GLX.glFramebufferTexture1D(target.value(), attachment.value(), target().value(), 0, level);
+        } else if (targetValue == Texture2D.Target.value()
+                || targetValue == TextureRectangle.Target.value()
+                || targetValue == Texture2DMultiSample.Target.value()
+                || targetValue == TextureRectangle.Target.value()) {
+            GLX.glFramebufferTexture2D(target.value(), attachment.value(), target().value(), 0, level);
+        }
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer detachCubeMap(FrameInnerBuffer.Attachment attachment, TextureCubeMap.FaceTarget target, int level) {
+        assertBinding();
+        GLX.glFramebufferTexture2D(target.value(), attachment.value(), target().value(), 0, level);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer detach3D(FrameInnerBuffer.Attachment attachment, int level, int layer) {
+        assertBinding();
+        GLX.glFramebufferTexture3D(target.value(), attachment.value(), Texture3D.Target.value(), 0, level, layer);
+        GLX.checkError();
+        return this;
+    }
+
+    private FrameBuffer attachLayer0(FrameInnerBuffer.Attachment attachment, Texture<?> texture, int level, int layer) {
         assertBinding();
         GLX.glFramebufferTextureLayer(target.value(), attachment.value(), texture.intHandle(), level, layer);
         GLX.checkError();
@@ -26,41 +107,67 @@ public class GlFrameBuffer extends GlBaseFrameBuffer<FrameBuffer> implements Fra
     }
 
     @Override
-    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture1DArray texture, int level, int layer) {
-        return attach0(attachment, texture, level, layer);
+    public FrameBuffer attachLayer(FrameInnerBuffer.Attachment attachment, Texture1DArray texture, int level, int layer) {
+        return attachLayer0(attachment, texture, level, layer);
     }
 
     @Override
-    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2DArray texture, int level, int layer) {
-        return attach0(attachment, texture, level, layer);
+    public FrameBuffer attachLayer(FrameInnerBuffer.Attachment attachment, Texture2DArray texture, int level, int layer) {
+        return attachLayer0(attachment, texture, level, layer);
     }
 
     @Override
-    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, TextureCubeMapArray texture, int level, int layer) {
-        return attach0(attachment, texture, level, layer);
+    public FrameBuffer attachLayer(FrameInnerBuffer.Attachment attachment, TextureCubeMapArray texture, int level, int layer) {
+        return attachLayer0(attachment, texture, level, layer);
     }
 
     @Override
-    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2DMultiSampleArray texture, int level, int layer) {
-        return attach0(attachment, texture, level, layer);
+    public FrameBuffer attachLayer(FrameInnerBuffer.Attachment attachment, Texture2DMultiSampleArray texture, int level, int layer) {
+        return attachLayer0(attachment, texture, level, layer);
     }
 
     @Override
-    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture3D texture, int level, int layer) {
-        return attach0(attachment, texture, level, layer);
+    public FrameBuffer attachLayer(FrameInnerBuffer.Attachment attachment, Texture3D texture, int level, int layer) {
+        return attachLayer0(attachment, texture, level, layer);
     }
 
     @Override
-    public FrameBuffer invalidate(Target<FrameBuffer> target, FrameInnerBuffer.Attachment attachment) {
+    public FrameBuffer detachLayer(FrameInnerBuffer.Attachment attachment, int level, int layer) {
         assertBinding();
-        GLX.glInvalidateFramebuffer(target.value(), attachment.value());
+        GLX.glFramebufferTextureLayer(target.value(), attachment.value(), 0, level, layer);
+        GLX.checkError();
         return this;
     }
 
     @Override
-    public FrameBuffer invalidate(Target<FrameBuffer> target, int x, int y, int width, int height, FrameInnerBuffer.Attachment attachment) {
+    public FrameBuffer attachLayered(FrameInnerBuffer.Attachment attachment, Texture<?> texture, int level) {
+        assertBinding();
+        GLX.glFramebufferTexture(target.value(), attachment.value(), texture.intHandle(), level);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer detachLayered(FrameInnerBuffer.Attachment attachment, int level) {
+        assertBinding();
+        GLX.glFramebufferTexture(target.value(), attachment.value(), 0, level);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer invalidate(FrameInnerBuffer.Attachment attachment) {
+        assertBinding();
+        GLX.glInvalidateFramebuffer(target.value(), attachment.value());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer invalidate(int x, int y, int width, int height, FrameInnerBuffer.Attachment attachment) {
         assertBinding();
         GLX.glInvalidateSubFramebuffer(target.value(), attachment.value(), x, y, width, height);
+        GLX.checkError();
         return this;
     }
 

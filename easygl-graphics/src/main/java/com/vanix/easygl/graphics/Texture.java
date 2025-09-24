@@ -1,7 +1,10 @@
 package com.vanix.easygl.graphics;
 
 import com.vanix.easygl.commons.IntEnum;
-import com.vanix.easygl.core.*;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.Bindable;
+import com.vanix.easygl.core.BindingState;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 

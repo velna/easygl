@@ -9,28 +9,62 @@ public interface FrameBuffer extends BaseFrameBuffer<FrameBuffer> {
     FrameBuffer selectDrawBuffer(FrameInnerBuffer.ColorBuffer colorBuffer);
 
     @Support(since = Version.GL30)
-    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture1DArray texture1DArray, int level, int layer);
+    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture1D texture1D, int level);
 
     @Support(since = Version.GL30)
-    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2DArray texture2DArray, int level, int layer);
+    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2D texture2D, int level);
 
     @Support(since = Version.GL30)
-    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, TextureCubeMapArray textureCubeMapArray, int level, int layer);
+    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, TextureRectangle textureRectangle);
 
     @Support(since = Version.GL30)
-    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2DMultiSampleArray texture2DMultiSampleArray, int level, int layer);
+    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, TextureCubeMap.Face face, int level);
+
+    @Support(since = Version.GL30)
+    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2DMultiSample textureMultiSample);
 
     @Support(since = Version.GL30)
     FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture3D texture3D, int level, int layer);
 
-    @Support(since = Version.GL43)
-    FrameBuffer invalidate(Target<FrameBuffer> target, FrameInnerBuffer.Attachment attachment);
+    @Support(since = Version.GL30)
+    FrameBuffer detach(FrameInnerBuffer.Attachment attachment, Texture.TexTarget<?> target, int level);
+
+    @Support(since = Version.GL30)
+    FrameBuffer detachCubeMap(FrameInnerBuffer.Attachment attachment, TextureCubeMap.FaceTarget target, int level);
+
+    @Support(since = Version.GL30)
+    FrameBuffer detach3D(FrameInnerBuffer.Attachment attachment, int level, int layer);
+
+    @Support(since = Version.GL30)
+    FrameBuffer attachLayer(FrameInnerBuffer.Attachment attachment, Texture1DArray texture1DArray, int level, int layer);
+
+    @Support(since = Version.GL30)
+    FrameBuffer attachLayer(FrameInnerBuffer.Attachment attachment, Texture2DArray texture2DArray, int level, int layer);
+
+    @Support(since = Version.GL30)
+    FrameBuffer attachLayer(FrameInnerBuffer.Attachment attachment, TextureCubeMapArray textureCubeMapArray, int level, int layer);
+
+    @Support(since = Version.GL30)
+    FrameBuffer attachLayer(FrameInnerBuffer.Attachment attachment, Texture2DMultiSampleArray texture2DMultiSampleArray, int level, int layer);
+
+    @Support(since = Version.GL30)
+    FrameBuffer attachLayer(FrameInnerBuffer.Attachment attachment, Texture3D texture3D, int level, int layer);
+
+    FrameBuffer detachLayer(FrameInnerBuffer.Attachment attachment, int level, int layer);
+
+    @Support(since = Version.GL32)
+    FrameBuffer attachLayered(FrameInnerBuffer.Attachment attachment, Texture<?> texture, int level);
+
+    FrameBuffer detachLayered(FrameInnerBuffer.Attachment attachment, int level);
 
     @Support(since = Version.GL43)
-    FrameBuffer invalidate(Target<FrameBuffer> target, int x, int y, int width, int height, FrameInnerBuffer.Attachment attachment);
+    FrameBuffer invalidate(FrameInnerBuffer.Attachment attachment);
 
-    default FrameBuffer invalidate(Target<FrameBuffer> target, Rectanglei<?> rectangle, FrameInnerBuffer.Attachment attachment) {
-        return invalidate(target, rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(), attachment);
+    @Support(since = Version.GL43)
+    FrameBuffer invalidate(int x, int y, int width, int height, FrameInnerBuffer.Attachment attachment);
+
+    default FrameBuffer invalidate(Rectanglei<?> rectangle, FrameInnerBuffer.Attachment attachment) {
+        return invalidate(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(), attachment);
     }
 
     @Support(since = Version.GL43)

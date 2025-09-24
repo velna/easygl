@@ -9,13 +9,13 @@ public interface DefaultFrameBuffer extends BaseFrameBuffer<DefaultFrameBuffer> 
     DefaultFrameBuffer selectDrawBuffer(DefaultFrameBuffer.DrawBuffer drawBuffer);
 
     @Support(since = Version.GL43)
-    DefaultFrameBuffer invalidate(Target<FrameBuffer> target, Invalidatable attachment);
+    DefaultFrameBuffer invalidate(Invalidatable attachment);
 
     @Support(since = Version.GL43)
-    DefaultFrameBuffer invalidate(Target<FrameBuffer> target, int x, int y, int width, int height, Invalidatable attachment);
+    DefaultFrameBuffer invalidate(int x, int y, int width, int height, Invalidatable attachment);
 
-    default DefaultFrameBuffer invalidate(Target<FrameBuffer> target, Rectanglei<?> rectangle, Invalidatable attachment) {
-        return invalidate(target, rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(), attachment);
+    default DefaultFrameBuffer invalidate(Rectanglei<?> rectangle, Invalidatable attachment) {
+        return invalidate(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(), attachment);
     }
 
     sealed interface DrawBuffer extends IntEnum permits FrameInnerBuffer.Constants {

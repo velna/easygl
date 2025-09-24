@@ -3,7 +3,9 @@ package com.vanix.easygl.graphics;
 import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.commons.primitives.Rectanglei;
-import com.vanix.easygl.core.*;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.MultiTargetBindable;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
@@ -26,54 +28,6 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     default T bindRead() {
         return bind(Target.read());
     }
-
-    @Support(since = Version.GL30)
-    default T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2D texture2D) {
-        return attach(target, attachment, texture2D, 0);
-    }
-
-    @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture1D texture1D, int level);
-
-    @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2D texture2D, int level);
-
-    @Support(since = Version.GL30)
-    default T attach(FrameInnerBuffer.Attachment attachment, Texture2D texture2D) {
-        return attach(target(), attachment, texture2D, 0);
-    }
-
-    @Support(since = Version.GL30)
-    default T attach(FrameInnerBuffer.Attachment attachment, Texture2D texture2D, int level) {
-        return attach(target(), attachment, texture2D, level);
-    }
-
-    @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureRectangle textureRectangle);
-
-    @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCubeMap.Face face, int level);
-
-    @Support(since = Version.GL30)
-    default T attach(FrameInnerBuffer.Attachment attachment, TextureCubeMap.Face face) {
-        return attach(target(), attachment, face, 0);
-    }
-
-    @Support(since = Version.GL30)
-    default T attach(FrameInnerBuffer.Attachment attachment, TextureCubeMap.Face face, int level) {
-        return attach(target(), attachment, face, level);
-    }
-
-    @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2DMultiSample textureMultiSample);
-
-    @Support(since = Version.GL30)
-    default T attach(FrameInnerBuffer.Attachment attachment, Texture2DMultiSample textureMultiSample) {
-        return attach(target(), attachment, textureMultiSample);
-    }
-
-    @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture3D texture3D, int level, int layer);
 
     @Support(since = Version.GL30)
     T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, RenderBuffer renderBuffer);
