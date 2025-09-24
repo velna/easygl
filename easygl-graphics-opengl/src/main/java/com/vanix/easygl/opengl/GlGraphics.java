@@ -24,6 +24,7 @@ public class GlGraphics implements Graphics {
     private final PixelStorageMode pixelStorageMode = new GlPixelStorageMode(this);
     private final PrimitiveRestart primitiveRestart = new GlPrimitiveRestart(this);
     private final Clipping clipping = new GlClipping(this);
+    private final Multisample multisample = new GlMultisample(this);
     private final Debug debug;
     private final Viewport[] viewports = new Viewport[Viewport.MaxViewports];
 
@@ -236,6 +237,11 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
+    public Multisample multisample() {
+        return multisample;
+    }
+
+    @Override
     public Graphics flush() {
         GLX.glFlush();
         return this;
@@ -259,12 +265,6 @@ public class GlGraphics implements Graphics {
         GLX.glGetMultisamplefv(GLX.GL_SAMPLE_POSITION, index, data);
         GLX.checkError();
         return new Vector2f(data);
-    }
-
-    @Override
-    public Graphics minSampleShading(float value) {
-        GLX.glMinSampleShading(value);
-        return this;
     }
 
     @Override

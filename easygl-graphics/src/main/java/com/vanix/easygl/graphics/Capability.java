@@ -6,12 +6,7 @@ import com.vanix.easygl.core.meta.MetaSystem;
 
 public enum Capability implements IntEnum {
     RasterizerDiscard("RASTERIZER_DISCARD"),
-    Multisample("MULTISAMPLE"),
-    SampleShading("SAMPLE_SHADING"),
     SampleMask("SAMPLE_MASK"),
-    SampleCoverage("SAMPLE_COVERAGE"),
-    SampleAlphaToCoverage("SAMPLE_ALPHA_TO_COVERAGE"),
-    SampleAlphaToOne("SAMPLE_ALPHA_TO_ONE"),
     ProgramPointSize("PROGRAM_POINT_SIZE"),
     LineSmooth("LINE_SMOOTH"),
     PolygonSmooth("POLYGON_SMOOTH"),

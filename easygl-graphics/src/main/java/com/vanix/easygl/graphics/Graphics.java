@@ -99,12 +99,12 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     @Support(since = Version.GL31)
     PrimitiveRestart primitiveRestart();
+
+    Multisample multisample();
     //endregion
 
     // region Multisampling
     Vector2f getMultiSample(int index);
-
-    Graphics minSampleShading(float value);
     // endregion
 
     // region Points, Lines and Polygons
