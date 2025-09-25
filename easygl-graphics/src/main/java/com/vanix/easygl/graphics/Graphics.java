@@ -8,6 +8,7 @@ import com.vanix.easygl.graphics.feature.*;
 import org.joml.Vector2f;
 
 import java.nio.FloatBuffer;
+import java.util.List;
 import java.util.ServiceLoader;
 
 public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, Graphics> {
@@ -158,6 +159,14 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     Graphics setPathDefaultInnerLevel(FloatBuffer value);
     // endregion
+
+    Version getVersion();
+
+    Version getShadingLanguageVersion();
+
+    Platform getPlatform();
+
+    List<String> getExtensions();
 
     static Graphics of() {
         return ServiceLoader.load(Graphics.class).findFirst().orElseThrow();

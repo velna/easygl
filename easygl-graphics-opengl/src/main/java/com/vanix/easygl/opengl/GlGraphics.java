@@ -5,6 +5,8 @@ import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.graphics.*;
 import com.vanix.easygl.graphics.feature.*;
 import com.vanix.easygl.opengl.feature.*;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
@@ -12,7 +14,11 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+@Slf4j
 public class GlGraphics implements Graphics {
     public static final GLCapabilities CAPABILITIES = GL.createCapabilities();
     private final DepthTest depthTest = new GlDepthTest(this);
@@ -27,12 +33,28 @@ public class GlGraphics implements Graphics {
     private final Multisample multisample = new GlMultisample(this);
     private final Debug debug;
     private final Viewport[] viewports = new Viewport[Viewport.MaxViewports];
+    private final Version version;
+    private final Version shadingLanguageVersion;
+    private final Platform platform;
+    private final List<String> extensions;
 
     public GlGraphics() {
         if (CAPABILITIES.OpenGL43) {
             debug = new GlDebug(this);
         } else {
             debug = null;
+        }
+        version = new Version(GLX.glGetString(GLX.GL_VERSION));
+        shadingLanguageVersion = new Version(GLX.glGetString(GLX.GL_SHADING_LANGUAGE_VERSION));
+        platform = new Platform(GLX.glGetString(GLX.GL_VENDOR), GLX.glGetString(GLX.GL_RENDERER));
+        int numExtensions = GLX.glGetInteger(GLX.GL_NUM_EXTENSIONS);
+        List<String> extList = new ArrayList<>(numExtensions);
+        for (int i = 0; i < numExtensions; i++) {
+            extList.add(GLX.glGetStringi(GLX.GL_EXTENSIONS, i));
+        }
+        extensions = Collections.unmodifiableList(extList);
+        if (log.isDebugEnabled()) {
+            log.debug("Platform: {}, Version: {}, ShadingLanguageVersion: {}, Extensions:\n{}", platform, version, shadingLanguageVersion, StringUtils.join(extensions, '\n'));
         }
     }
 
@@ -445,5 +467,34 @@ public class GlGraphics implements Graphics {
     public Graphics setPathDefaultInnerLevel(FloatBuffer value) {
         GLX.glPatchParameterfv(GLX.GL_PATCH_DEFAULT_INNER_LEVEL, value);
         return this;
+    }
+
+    @Override
+    public Version getVersion() {
+        return version;
+    }
+
+    @Override
+    public Version getShadingLanguageVersion() {
+        return shadingLanguageVersion;
+    }
+
+    @Override
+    public Platform getPlatform() {
+        return platform;
+    }
+
+    @Override
+    public List<String> getExtensions() {
+        return extensions;
+    }
+
+    @Override
+    public String toString() {
+        return "GlGraphics{" +
+                ", platform=" + platform +
+                ", version=" + version +
+                ", shadingLanguageVersion=" + shadingLanguageVersion +
+                '}';
     }
 }

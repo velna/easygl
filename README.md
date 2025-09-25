@@ -16,15 +16,15 @@
 | 类别                         | API完成度 | 功能完成度 |
 |----------------------------|--------|-------|
 | Synchronization            | 100%   | 100%  |
-| Asynchronous Queries       | 60%    | 60%   |
+| Asynchronous Queries       | 100%   | 10%   |
 | Timer Queries              | 100%   | 100%  |
 | Buffer Objects             | 100%   | 100%  |
-| Shaders and Programs       | 60%    | 95%   |
-| Textures and Samplers      | 60%    | 85%   |
-| Framebuffer Objects        | 70%    | 90%   |
-| Vertices                   | 80%    | 100%  |
+| Shaders and Programs       | 80%    | 95%   |
+| Textures and Samplers      | 80%    | 95%   |
+| Framebuffer Objects        | 90%    | 95%   |
+| Vertices                   | 90%    | 100%  |
 | Vertex Arrays              | 90%    | 100%  |
-| Vertex Attributes          | 70%    | 95%   |
+| Vertex Attributes          | 90%    | 100%  |
 | Vertex Post-Processing     | 100%   | 100%  |
 | Rasterization              | 100%   | 100%  |
 | Fragment Shaders           | 100%   | 100%  |

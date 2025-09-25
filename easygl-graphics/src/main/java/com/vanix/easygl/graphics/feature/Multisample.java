@@ -8,6 +8,9 @@ import com.vanix.easygl.graphics.Graphics;
 import com.vanix.easygl.graphics.Version;
 
 public interface Multisample extends GraphicsFeature<Multisample>, MultiFeature<Multisample.Feature, Multisample, Graphics> {
+    @Support(since = Version.GL32)
+    int MaxMaskIndex = MetaSystem.Graphics.queryInt("GET.GL_MAX_SAMPLE_MASK_WORDS");
+
     Multisample setCoverage(float value, boolean invert);
 
     float getCoverageValue();

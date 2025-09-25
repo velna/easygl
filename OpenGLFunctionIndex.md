@@ -293,8 +293,8 @@
 | glGetShaderiv                                  | Shader.compile()                                                                   |
 | glGetShaderPrecisionFormat                     | Graphics.getXXXPrecisionFormat()                                                   |
 | glGetShaderSource                              | Shader.source()                                                                    |
-| glGetString                                    | X                                                                                  |
-| glGetStringi                                   | X                                                                                  |
+| glGetString                                    | Graphics.getVersion()<br/>Graphics.getPlatform()                                   |
+| glGetStringi                                   | Graphics.getExtensions()                                                           |
 | glGetSubroutineIndex                           | SubroutineUniformInterface.getResource()                                           |
 | glGetSubroutineUniformLocation                 | SubroutineUniformInterface.getLocation()                                           |
 | glGetSync                                      | Sync.isSignaled()                                                                  |
@@ -461,8 +461,8 @@
 | glRenderbufferStorage                          | RenderBuffer.storage()                                                             |
 | glRenderbufferStorageMultisample               | RenderBuffer.storageMultiSample()                                                  |
 | glResumeTransformFeedback                      | TransformFeedback.resume()                                                         |
-| glSampleCoverage                               | X                                                                                  |
-| glSampleMaski                                  | X                                                                                  |
+| glSampleCoverage                               | Multisample.setCoverage()                                                          |
+| glSampleMaski                                  | Multisample.setMask()                                                              |
 | glSamplerParameter                             | Sampler.XXX()                                                                      |
 | glSamplerParameterf                            | Sampler.XXX()                                                                      |
 | glSamplerParameterfv                           | Sampler.XXX()                                                                      |
