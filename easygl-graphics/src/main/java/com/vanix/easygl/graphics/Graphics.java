@@ -22,18 +22,6 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     Viewport viewport(int index);
 
-    Graphics setDepthRange(double near, double far);
-
-    @Support(since = Version.GL41)
-    Graphics setDepthRange(float near, float far);
-
-    @Support(since = Version.GL41)
-    float[] getDepthRangeFloat();
-
-    double[] getDepthRangeDouble();
-
-    int[] getDepthRangeIntMapped();
-
     Graphics setMemoryBarrier(MemoryBarrier memoryBarrier);
 
     Graphics setMemoryBarrier(BitSet<MemoryBarrier> memoryBarriers);
@@ -86,6 +74,8 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
     Clipping clipDistances();
 
     DepthTest depthTest();
+
+    DepthClamp depthClamp();
 
     Blending blending();
 

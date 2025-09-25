@@ -22,6 +22,7 @@ import java.util.List;
 public class GlGraphics implements Graphics {
     public static final GLCapabilities CAPABILITIES = GL.createCapabilities();
     private final DepthTest depthTest = new GlDepthTest(this);
+    private final DepthClamp depthClamp = new GlDepthClamp(this);
     private final Blending blending = new GlBlending(this);
     private final StencilTest stencilTest = new GlStencilTest(this);
     private final ScissorTest scissorTest = new GlScissorTest(this);
@@ -71,39 +72,6 @@ public class GlGraphics implements Graphics {
             viewports[index] = viewport = new GlViewport(index);
         }
         return viewport;
-    }
-
-    @Override
-    public Graphics setDepthRange(double near, double far) {
-        GLX.glDepthRange(near, far);
-        return this;
-    }
-
-    @Override
-    public Graphics setDepthRange(float near, float far) {
-        GLX.glDepthRangef(near, far);
-        return this;
-    }
-
-    @Override
-    public float[] getDepthRangeFloat() {
-        var data = new float[2];
-        GLX.glGetFloatv(GLX.GL_DEPTH_RANGE, data);
-        return data;
-    }
-
-    @Override
-    public double[] getDepthRangeDouble() {
-        var data = new double[2];
-        GLX.glGetDoublev(GLX.GL_DEPTH_RANGE, data);
-        return data;
-    }
-
-    @Override
-    public int[] getDepthRangeIntMapped() {
-        var data = new int[2];
-        GLX.glGetIntegerv(GLX.GL_DEPTH_RANGE, data);
-        return data;
     }
 
     @Override
@@ -221,6 +189,11 @@ public class GlGraphics implements Graphics {
     @Override
     public DepthTest depthTest() {
         return depthTest;
+    }
+
+    @Override
+    public DepthClamp depthClamp() {
+        return depthClamp;
     }
 
     @Override
