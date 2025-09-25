@@ -22,8 +22,8 @@ public class Cache {
     public static final IntEnumCache<LogicalOperation.Op> LogicalOp = new IntEnumCache<LogicalOperation.Op>(LogicalOperation.Op.class, 0xf);
     public static final IntEnumCache<Blending.Function> BlendingFunction = new IntEnumCache<>(Blending.Function.class, 2, 0xf);
     public static final IntEnumCache<Blending.Equation> BlendingEquation = new IntEnumCache<>(Blending.Equation.class, 0xf);
-    public static final IntEnumCache<com.vanix.easygl.graphics.PolygonMode> PolygonMode = new IntEnumCache<>(PolygonMode.class, 0xf);
-    public static final IntEnumCache<com.vanix.easygl.graphics.CompareFunction> CompareFunction = new IntEnumCache<>(CompareFunction.class, 0xf);
+    public static final IntEnumCache<PolygonMode> PolygonMode = new IntEnumCache<>(PolygonMode.class, 0xf);
+    public static final IntEnumCache<CompareFunction> CompareFunction = new IntEnumCache<>(CompareFunction.class, 0xf);
     public static final IntEnumCache<StencilTest.Op> StencilTestOp = new IntEnumCache<>(StencilTest.Op.class, 1, 0xf);
     public static final IntEnumCache<Debug.Source> DebugSource = new IntEnumCache<>(Debug.Source.class, 0xf);
     public static final IntEnumCache<Debug.Type> DebugType = new IntEnumCache<>(Debug.Type.class, 0xf);
@@ -31,11 +31,11 @@ public class Cache {
     public static final IntEnumCache<Debug.Severity> DebugSeverity = new IntEnumCache<>(Debug.Severity.class, 0xf);
     public static final IntObjectMap<FrameInnerBuffer.ReadBuffer> FrameReadBuffer = intObjectMapOf(FrameInnerBuffer.ReadBuffer.class);
     public static final IntObjectMap<BaseFrameBuffer.Status> FrameBufferStatus = intObjectMapOf(BaseFrameBuffer.Status.class);
-    public static final IntObjectMap<com.vanix.easygl.graphics.DataType> DataType = intObjectMapOf(DataType.class);
+    public static final IntObjectMap<DataType> DataType = intObjectMapOf(DataType.class);
     public static final IntObjectMap<MinFilter> MinFilter = intObjectMapOf(MinFilter.class);
     public static final IntEnumCache<MagFilter> MagFilter = new IntEnumCache<>(MagFilter.class, 0xf);
     public static final IntEnumCache<Texture.Wrap> TextureWrap = new IntEnumCache<>(Texture.Wrap.class, 0xf);
-    public static final IntObjectMap<com.vanix.easygl.graphics.PixelFormat> PixelFormat = intObjectMapOf(PixelFormat.class);
+    public static final IntObjectMap<PixelFormat> PixelFormat = intObjectMapOf(PixelFormat.class);
     public static final IntObjectMap<InternalPixelFormat> InternalPixelFormatCache = internalPixelFormatCache();
     public static final IntEnumCache<Access> Access = new IntEnumCache<>(Access.class, 0xf);
 

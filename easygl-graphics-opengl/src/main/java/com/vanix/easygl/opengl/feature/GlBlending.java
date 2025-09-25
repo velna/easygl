@@ -68,7 +68,7 @@ public class GlBlending extends GlFeature<Blending> implements Blending {
     }
 
     @Override
-    public Color setColor() {
+    public Color getColor() {
         float[] data = new float[4];
         GLX.glGetFloatv(GLX.GL_BLEND_COLOR, data);
         return new Color(data[0], data[1], data[2], data[3]);

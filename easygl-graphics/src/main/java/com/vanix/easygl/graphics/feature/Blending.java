@@ -39,7 +39,7 @@ public interface Blending extends IndexedFeature<Blending, Graphics>, GraphicsFe
 
     Blending setColor(float red, float green, float blue, float alpha);
 
-    Color setColor();
+    Color getColor();
 
     Blending setEquation(Equation equation);
 
