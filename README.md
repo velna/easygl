@@ -16,7 +16,7 @@
 | 类别                         | API完成度 | 功能完成度 |
 |----------------------------|--------|-------|
 | Synchronization            | 100%   | 100%  |
-| Asynchronous Queries       | 100%   | 10%   |
+| Asynchronous Queries       | 100%   | 100%  |
 | Timer Queries              | 100%   | 100%  |
 | Buffer Objects             | 100%   | 100%  |
 | Shaders and Programs       | 80%    | 95%   |

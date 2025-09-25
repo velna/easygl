@@ -5,6 +5,7 @@ import com.vanix.easygl.commons.util.IntBiConsumer;
 import com.vanix.easygl.commons.util.IntLongConsumer;
 import lombok.ToString;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 @ToString(of = {"id", "handle"})
@@ -62,6 +63,11 @@ public class BindingState<E extends BindTarget<E, T>, T extends Handle> implemen
     public void unbind(E target) {
         unbindFunction.accept(target.value(), unbindValue);
         this.handle = null;
+    }
+
+    @Nullable
+    public T bindingObject() {
+        return handle;
     }
 
     public boolean isBound() {

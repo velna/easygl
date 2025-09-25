@@ -193,12 +193,12 @@
 | glGetActiveAtomicCounterBufferiv               | X 建议使用OpenGL43的ProgramInterfaces                                                   |
 | glGetActiveAttrib                              | Program.getActiveVertexAttribute()                                                 |
 | glGetActiveSubroutineName                      | X 建议使用OpenGL43的ProgramInterfaces                                                   |
-| glGetActiveSubroutineUniform                   | X 建议使用OpenGL43的ProgramInterfaces                                                   |
-| glGetActiveSubroutineUniformiv                 | X 建议使用OpenGL43的ProgramInterfaces                                                   |
-| glGetActiveSubroutineUniformName               | X 建议使用OpenGL43的ProgramInterfaces                                                   |
+| glGetActiveSubroutineUniform                   |                                                                                    |
+| glGetActiveSubroutineUniformiv                 |                                                                                    |
+| glGetActiveSubroutineUniformName               |                                                                                    |
 | glGetActiveUniform                             | Program.getUniform()                                                               |
-| glGetActiveUniformBlock                        | * See sub interfaces of ProgramResource                                            |
-| glGetActiveUniformBlockiv                      | * See sub interfaces of ProgramResource                                            |
+| glGetActiveUniformBlock                        |                                                                                    |
+| glGetActiveUniformBlockiv                      |                                                                                    |
 | glGetActiveUniformBlockName                    | X 建议使用OpenGL43的ProgramInterfaces                                                   |
 | glGetActiveUniformName                         | Program.uniformNames()                                                             |
 | glGetActiveUniformsiv                          | Program.getUniform()                                                               |

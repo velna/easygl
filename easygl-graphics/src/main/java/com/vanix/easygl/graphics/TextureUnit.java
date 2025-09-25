@@ -39,16 +39,12 @@ public abstract class TextureUnit extends SimpleIndexedIntEnum implements Bindab
 
     @Override
     public void close() {
-
+        // noop
     }
 
     @Override
     public long handle() {
         return value;
-    }
-
-    public static TextureUnit of(int i) {
-        return cache.valueOf(i);
     }
 
     public TextureUnit bindTexture(Texture<?> texture) {
@@ -65,4 +61,13 @@ public abstract class TextureUnit extends SimpleIndexedIntEnum implements Bindab
 
     @Support(since = Version.GL44)
     public abstract TextureUnit bindSamplers(Sampler... samplers);
+
+    public static TextureUnit activeTextureUnit() {
+        return of(MetaSystem.Graphics.queryInt("GET.ACTIVE_TEXTURE"));
+    }
+
+    public static TextureUnit of(int i) {
+        return cache.valueOf(i);
+    }
+
 }
