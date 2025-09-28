@@ -2,8 +2,6 @@ package com.vanix.easygl.commons.util;
 
 import com.vanix.easygl.commons.Chain;
 import com.vanix.easygl.commons.Chained;
-import com.vanix.easygl.commons.util.ThrowingBiConsumer;
-import com.vanix.easygl.commons.util.ThrowingSupplier;
 import org.apache.commons.beanutils2.PropertyUtils;
 import org.apache.commons.lang3.reflect.TypeUtils;
 
@@ -39,7 +37,7 @@ public class BeanUtils {
         var cacheSupplier = new CacheSupplier<>(beanSupplier);
         var descriptors = PropertyUtils.getPropertyDescriptors(beanType);
         for (var desc : descriptors) {
-            if (isChainType(desc.getWriteMethod().getGenericReturnType(), propertyType)) {
+            if (desc.getWriteMethod() != null && desc.getReadMethod() != null && isChainType(desc.getWriteMethod().getGenericReturnType(), propertyType)) {
                 consumer.accept(parentName + desc.getName(), param -> {
                     try {
                         var bean = cacheSupplier.get();

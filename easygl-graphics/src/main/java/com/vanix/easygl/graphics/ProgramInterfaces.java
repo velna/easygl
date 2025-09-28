@@ -27,6 +27,17 @@ public interface ProgramInterfaces {
         };
     }
 
+    default SubroutineUniformInterface subroutineUniform(Shader.Type shaderStage) {
+        return switch (shaderStage) {
+            case Fragment -> fragmentSubroutineUniform();
+            case Vertex -> vertexSubroutineUniform();
+            case Geometry -> geometrySubroutineUniform();
+            case TessControl -> tessControlSubroutineUniform();
+            case TessEvaluation -> tessEvaluationSubroutineUniform();
+            case Compute -> throw new IllegalArgumentException();
+        };
+    }
+
     SubroutineInterface vertexSubroutine();
 
     SubroutineInterface tessControlSubroutine();

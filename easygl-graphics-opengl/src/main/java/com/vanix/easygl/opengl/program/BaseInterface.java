@@ -1,5 +1,6 @@
 package com.vanix.easygl.opengl.program;
 
+import com.vanix.easygl.commons.util.BeanUtils;
 import com.vanix.easygl.commons.util.LazyList;
 import com.vanix.easygl.graphics.Program;
 import com.vanix.easygl.graphics.ProgramInterface;
@@ -8,34 +9,37 @@ import com.vanix.easygl.opengl.GLX;
 import com.vanix.easygl.opengl.GlProgramInterfaceType;
 import com.vanix.easygl.opengl.Invalidatable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class BaseInterface<T extends ProgramResource<T>> implements Invalidatable,
-        ProgramInterface.Named<T>,
-        ProgramInterface.Variable<T> {
+        ProgramInterface<T> {
     protected static final InterfaceCore<BaseInterface<?>> GL43 = new InterfaceCore<>() {};
     protected final Program program;
     protected final GlProgramInterfaceType type;
     protected final InterfaceCore<BaseInterface<?>> interfaceCore;
     private final List<T> resources = new ArrayList<>();
+    private final Map<String, T> resourceMap = new HashMap<>();
     private final List<T> resourcesLazy;
+    private int activeResources = -1;
 
     public BaseInterface(Program program, GlProgramInterfaceType type) {
         this(program, type, GL43);
     }
 
-    public BaseInterface(Program program, GlProgramInterfaceType type, InterfaceCore<BaseInterface<?>> interfaceCore) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public BaseInterface(Program program, GlProgramInterfaceType type, InterfaceCore interfaceCore) {
         this.program = program;
         this.type = type;
-        this.interfaceCore = interfaceCore;
+        this.interfaceCore = (InterfaceCore<BaseInterface<?>>) interfaceCore;
         resourcesLazy = LazyList.lazyList(resources, index -> newResource(type, index));
     }
 
     public Program program() {
         return program;
+    }
+
+    public GlProgramInterfaceType interfaceType() {
+        return type;
     }
 
     protected abstract T newResource(GlProgramInterfaceType type, int index);
@@ -48,6 +52,7 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements Inv
             }
         }
         resources.clear();
+        activeResources = -1;
     }
 
     @Override
@@ -69,18 +74,59 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements Inv
         }
     }
 
-    @Override
     public T getResource(String name) {
-        int index = interfaceCore.getIndexByName(this, name);
-        return index == GLX.GL_INVALID_INDEX ? null : resourcesLazy.get(index);
+        return resourceMap.computeIfAbsent(name, key -> {
+            int index = interfaceCore.getIndexByName(this, name);
+            return index == GLX.GL_INVALID_INDEX ? null : resourcesLazy.get(index);
+        });
+    }
+
+    public boolean containsResource(String name) {
+        return getResource(name) != null;
+    }
+
+    public Map<String, T> getResourcesMap() {
+        if (resourceMap.size() != getActiveResources()) {
+            for (int i = 0; i < getActiveResources(); i++) {
+                var resource = getResource(i);
+                resourceMap.put(((ProgramResource.Named<?>) resource).getName(), resource);
+            }
+        }
+        return Collections.unmodifiableMap(resourceMap);
+    }
+
+    public List<String> getResourceNames() {
+        int n = getActiveResources();
+        if (n == 0) {
+            return Collections.emptyList();
+        }
+        var names = new ArrayList<String>(n);
+        for (int i = 0; i < n; i++) {
+            names.add(((ProgramResource.Named<?>) getResource(i)).getName());
+        }
+        return names;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <B> B bindResources(B bean) {
+        BeanUtils.forEachSettersOfType(bean, (Class<T>) type.resourceType(), (name, setter) -> {
+            var resource = getResource(name);
+            if (resource != null) {
+                setter.accept(resource);
+            }
+        });
+        return bean;
     }
 
     @Override
     public int getActiveResources() {
-        return interfaceCore.getActiveResources(this);
+        if (activeResources < 0) {
+            activeResources = interfaceCore.getActiveResources(this);
+        }
+        return activeResources;
     }
 
-    @Override
     public int getMaxNumActiveVariables() {
         return interfaceCore.getMaxNumActiveVariables(this);
     }

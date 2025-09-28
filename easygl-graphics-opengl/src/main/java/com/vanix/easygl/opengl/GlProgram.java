@@ -1,27 +1,21 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.commons.util.BeanUtils;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.graphics.*;
-import com.vanix.easygl.graphics.program.Subroutine;
-import com.vanix.easygl.graphics.program.SubroutineUniform;
 import com.vanix.easygl.graphics.program.Uniform;
-import com.vanix.easygl.graphics.program.UniformBlock;
-import com.vanix.easygl.opengl.program.Gl20Uniform;
-import com.vanix.easygl.opengl.program.Gl31UniformBlock;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
-    private final Map<String, Uniform> uniforms = new LinkedHashMap<>();
-    private final Map<Shader.Type, Map<String, SubroutineUniform>> subroutineUniforms = new EnumMap<>(Shader.Type.class);
     private int version;
-    private GlProgramInterfaces interfaces;
+    private final GlProgramInterfaces interfaces = new GlProgramInterfaces(this);
 
     protected GlProgram() {
         this(GLX.glCreateProgram());
@@ -96,45 +90,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
                 throw new GraphicsException("error link program: " + infoLog);
             }
             version++;
-            uniforms.clear();
-            subroutineUniforms.clear();
-            if (interfaces != null) {
-                interfaces.invalidate();
-            }
-            int uniformCount = getAttribute(ProgramAttribute.ActiveUniforms);
-            for (int i = 0; i < uniformCount; i++) {
-                if (GlGraphics.CAPABILITIES.OpenGL43) {
-                    var uniform = interfaces().uniform().getResource(i);
-                    uniforms.put(uniform.getName(), uniform);
-                } else {
-                    var length = stack.mallocInt(1);
-                    var size = stack.mallocInt(1);
-                    var type = stack.mallocInt(1);
-                    var nameBuffer = stack.malloc(getAttribute(ProgramAttribute.ActiveUniformMaxLength));
-                    GLX.glGetActiveUniform(program, i, length, size, type, nameBuffer);
-                    String name = MemoryUtil.memUTF8(nameBuffer, length.get());
-                    uniforms.put(name, new Gl20Uniform(this, name, i, Cache.DataType.get(type.get()), size.get()));
-                }
-            }
-            if (GlGraphics.CAPABILITIES.OpenGL40) {
-                for (var shaderType : Shader.Type.values()) {
-                    var subroutineUniformInterface = switch (shaderType) {
-                        case Vertex -> interfaces().vertexSubroutineUniform();
-                        case Fragment -> interfaces().fragmentSubroutineUniform();
-                        case Geometry -> interfaces().geometrySubroutineUniform();
-                        case TessControl -> interfaces().tessControlSubroutineUniform();
-                        case TessEvaluation -> interfaces().tessEvaluationSubroutineUniform();
-                        case Compute -> null;
-                    };
-                    if (subroutineUniformInterface != null) {
-                        var subroutineUniformCount = subroutineUniformInterface.getActiveResources();
-                        for (var i = 0; i < subroutineUniformCount; i++) {
-                            var subroutineUniform = subroutineUniformInterface.getResource(i);
-                            subroutineUniforms.computeIfAbsent(shaderType, key -> new LinkedHashMap<>()).put(subroutineUniform.getName(), subroutineUniform);
-                        }
-                    }
-                }
-            }
+            interfaces.invalidate();
             return self();
         }
     }
@@ -204,78 +160,22 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public GlProgramInterfaces interfaces() {
-        if (interfaces == null) {
-            interfaces = new GlProgramInterfaces(this);
-        }
         return interfaces;
     }
 
     @Override
     public <B> B bindResources(B bean) {
-        if (interfaces != null) {
-            return interfaces.bindResources(bean);
-        }
-        BeanUtils.forEachSettersOfType(bean, Uniform.class, (name, setter) -> {
-            var uniform = uniforms.get(name);
-            if (uniform != null) {
-                setter.accept(uniform);
-            }
-        });
-        return bean;
+        return interfaces().bindResources(bean);
     }
 
     @Override
     public boolean containsUniform(String name) {
-        return uniforms.containsKey(name);
-    }
-
-    @Override
-    public List<String> uniformNames() {
-        return new ArrayList<>(uniforms.keySet());
+        return interfaces.uniform().containsResource(name);
     }
 
     @Override
     public Uniform getUniform(String name) {
-        var uniform = uniforms.get(name);
-        if (uniform == null) {
-            throw new NoSuchElementException("Can not find uniform: " + name);
-        }
-        return uniform;
-    }
-
-    @Override
-    public UniformBlock getUniformBlock(String name) {
-        if (GlGraphics.CAPABILITIES.OpenGL43) {
-            return interfaces.uniformBlock().getResource(name);
-        }
-        int index = GLX.glGetUniformBlockIndex(intHandle(), name);
-        if (index == GLX.GL_INVALID_INDEX) {
-            throw new NoSuchElementException("No uniform block of name find: " + name);
-        }
-        return new Gl31UniformBlock(this, index, name);
-    }
-
-    @Override
-    public SubroutineUniform getSubroutineUniform(Shader.Type shaderType, String name) {
-        return subroutineUniforms.getOrDefault(shaderType, Collections.emptyMap()).get(name);
-    }
-
-    @Override
-    public Program loadSubroutineUniforms(Shader.Type shaderType, List<Subroutine> subroutines) {
-        if (subroutineUniforms.getOrDefault(shaderType, Collections.emptyMap()).isEmpty()) {
-            return this;
-        }
-        assertBinding();
-        try (var stack = MemoryStack.stackPush()) {
-            var sus = subroutineUniforms.get(shaderType);
-            var indices = stack.mallocInt(sus.size());
-            for (var su : sus.values()) {
-                indices.put(su.index());
-            }
-            GLX.glUniformSubroutinesuiv(shaderType.value(), indices.clear());
-            GLX.checkError();
-        }
-        return this;
+        return interfaces.uniform().getResource(name);
     }
 
     @Override
