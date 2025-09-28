@@ -1,6 +1,8 @@
 package com.vanix.easygl.opengl.feature;
 
-import com.vanix.easygl.graphics.*;
+import com.vanix.easygl.graphics.CompareFunction;
+import com.vanix.easygl.graphics.Face;
+import com.vanix.easygl.graphics.Graphics;
 import com.vanix.easygl.graphics.feature.StencilTest;
 import com.vanix.easygl.opengl.Cache;
 import com.vanix.easygl.opengl.GLX;
@@ -9,6 +11,17 @@ public class GlStencilTest extends GlFeature<StencilTest> implements StencilTest
 
     public GlStencilTest(Graphics graphics) {
         super(GLX.GL_STENCIL_TEST, graphics);
+    }
+
+    @Override
+    public StencilTest setMask(int mask) {
+        GLX.glStencilMask(mask);
+        return this;
+    }
+
+    @Override
+    public int getMask() {
+        return GLX.glGetInteger(GLX.GL_STENCIL_WRITEMASK);
     }
 
     @Override

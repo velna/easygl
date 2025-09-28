@@ -184,18 +184,24 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     //endregion
 
     //region Fine Control of Buffer Updates
-    T setColorMask(boolean read, boolean green, boolean blue, boolean alpha);
+    T setColorMask(boolean red, boolean green, boolean blue, boolean alpha);
+
+    default T setColorMaks(ColorMask colorMaks) {
+        return setColorMask(colorMaks.red(), colorMaks.green(), colorMaks.blue(), colorMaks.alpha());
+    }
 
     @Support(since = Version.GL30)
     T setColorMask(FrameInnerBuffer.DrawBuffer drawBuffer, boolean read, boolean green, boolean blue, boolean alpha);
 
-    T setDepthMask(boolean flag);
+    @Support(since = Version.GL30)
+    default T setColorMask(FrameInnerBuffer.DrawBuffer drawBuffer, ColorMask colorMaks) {
+        return setColorMask(drawBuffer, colorMaks.red(), colorMaks.green(), colorMaks.blue(), colorMaks.alpha());
+    }
 
-    T setStencilMask(int mask);
+    ColorMask getColorMaks();
 
-    T setStencilMask(Face face, int mask);
+    ColorMask getColorMask(FrameInnerBuffer.DrawBuffer drawBuffer);
     //endregion
-
 
     @SuppressWarnings("unchecked")
     sealed interface Target<T extends BaseFrameBuffer<T>> extends BindTarget<Target<T>, T> permits FrameBufferTarget {

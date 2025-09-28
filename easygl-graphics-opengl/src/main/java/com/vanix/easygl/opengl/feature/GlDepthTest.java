@@ -11,6 +11,17 @@ public class GlDepthTest extends GlFeature<DepthTest> implements DepthTest {
         super(GLX.GL_DEPTH_TEST, graphics);
     }
 
+    @Override
+    public DepthTest setWriteDepthBuffer(boolean enable) {
+        GLX.glDepthMask(enable);
+        return this;
+    }
+
+    @Override
+    public boolean isWriteDepthBuffer() {
+        return GLX.glGetBoolean(GLX.GL_DEPTH_WRITEMASK);
+    }
+
     public DepthTest setFunction(CompareFunction function) {
         GLX.glDepthFunc(function.value());
         return this;

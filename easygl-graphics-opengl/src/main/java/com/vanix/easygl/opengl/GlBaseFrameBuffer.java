@@ -5,6 +5,7 @@ import com.vanix.easygl.core.AbstractMultiTargetBindable;
 import com.vanix.easygl.graphics.*;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
+import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -143,21 +144,21 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
     }
 
     @Override
-    public T setDepthMask(boolean flag) {
-        GLX.glDepthMask(flag);
-        return self();
+    public ColorMask getColorMaks() {
+        try (var stack = MemoryStack.stackPush()) {
+            var buf = stack.mallocInt(4);
+            GLX.glGetIntegerv(GLX.GL_COLOR_WRITEMASK, buf);
+            return new ColorMask(buf.get() == GLX.GL_TRUE, buf.get() == GLX.GL_TRUE, buf.get() == GLX.GL_TRUE, buf.get() == GLX.GL_TRUE);
+        }
     }
 
     @Override
-    public T setStencilMask(int mask) {
-        GLX.glStencilMask(mask);
-        return self();
-    }
-
-    @Override
-    public T setStencilMask(Face face, int mask) {
-        GLX.glStencilMaskSeparate(face.value(), mask);
-        return self();
+    public ColorMask getColorMask(FrameInnerBuffer.DrawBuffer drawBuffer) {
+        try (var stack = MemoryStack.stackPush()) {
+            var buf = stack.mallocInt(4);
+            GLX.glGetIntegeri_v(GLX.GL_COLOR_WRITEMASK, drawBuffer.index(), buf);
+            return new ColorMask(buf.get() == GLX.GL_TRUE, buf.get() == GLX.GL_TRUE, buf.get() == GLX.GL_TRUE, buf.get() == GLX.GL_TRUE);
+        }
     }
 
     @Override

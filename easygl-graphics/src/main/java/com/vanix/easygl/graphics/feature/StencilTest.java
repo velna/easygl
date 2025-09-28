@@ -2,12 +2,17 @@ package com.vanix.easygl.graphics.feature;
 
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Support;
-import com.vanix.easygl.graphics.Version;
 import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.graphics.CompareFunction;
 import com.vanix.easygl.graphics.Face;
+import com.vanix.easygl.graphics.Version;
 
 public interface StencilTest extends GraphicsFeature<StencilTest> {
+
+    StencilTest setMask(int mask);
+
+    int getMask();
+
     StencilTest setFunction(CompareFunction function, int ref, int mask);
 
     @Support(since = Version.GL20)
